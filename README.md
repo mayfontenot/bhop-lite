@@ -12,15 +12,15 @@ how to use:
 6. /tier <tier> to set map tier
 7. /save to save data before map change, currently no map vote system, will be implemented soon
 
-other commands:\n
-restart or r\n
-usp\n
-glock\n
-remove\n
-auto or normal or n\n
-manual or easy or legit\n
-sideways or sw\n
-halfsideways or hsw\n
-wonly or w\n
-aonly or a\n
+other commands:<br/>
+restart or r<br/>
+usp<br/>
+glock<br/>
+remove<br/>
+auto or normal or n<br/>
+manual or easy or legit<br/>
+sideways or sw<br/>
+halfsideways or hsw<br/>
+wonly or w<br/>
+aonly or a<br/>
 spectate or spec
