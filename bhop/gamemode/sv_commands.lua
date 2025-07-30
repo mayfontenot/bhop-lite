@@ -87,7 +87,7 @@ function GM:PlayerSay(sender, text, teamChat)
 			if ReadFromCache(playerCache, ROLE_USER, sender:SteamID(), "role") == ROLE_ADMIN then
 				local tier = string.sub(text, 6)
 
-				WriteToCache(mapsCache, tier, "tier")
+				WriteToCache(mapCache, tier, "tier")
 				UpdateMapCache()
 			end
 		end
