@@ -6,7 +6,7 @@ WORK IN PROGRESS, many features yet to be implemented
 how to use:
 1. place bhop folder in garrysmod/gamemodes directory
 2. create a new file called player.json in garrysmod/data/bhop directory
-3. write {["YOURSTEAMID"] = {["role"] = "Admin"}}
+3. write {"YOUR STEAM ID": {"role": "Admin"}}
 4. /start pos1, /start pos2, /end pos1, /end pos2 to setup zones
 5. /tier <tier> to set map tier
 6. /save to save data before map change, currently no map vote system, will be implemented soon
