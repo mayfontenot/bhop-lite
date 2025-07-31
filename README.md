@@ -11,7 +11,7 @@ how to use:
 4. command prefix: "!" or "/"
 5. /start pos1, /start pos2, /end pos1, /end pos2 to setup zones
 6. /tier <tier> to set map tier
-7. /save to save data before map change, currently no map vote system, will be implemented soon
+7. /map <map name> to save data and change level, currently no map vote system, will be implemented soon
 
 other commands:<br/>
 restart or r<br/>
