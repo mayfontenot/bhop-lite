@@ -8,14 +8,12 @@ function EndTimer(ply, timerEnd)
 	if time < worldRecord or worldRecord == 0 then
 		WriteToCache(worldRecordsCache, {["steamID"] = steamID, ["name"] = name, ["time"] = time}, style)
 		WriteToCache(personalRecordsCache, time, steamID, style)
-		WriteToCache(playerCache, ReadFromCache(mapCache, 1, "tier") * 100, steamID, "points")
 		UpdatePersonalRecordsCache()
 		UpdateWorldRecordsCache()
 
 		PrintMessage(HUD_PRINTTALK, "[" .. ALT_NAME .. "] " .. name .. " set a new " .. style .. " World Record of " .. ConvertTime(time) .. "!")
 	elseif time < personalRecord or personalRecord == 0 then
 		WriteToCache(personalRecordsCache, time, steamID, style)
-		WriteToCache(playerCache, ReadFromCache(mapCache, 1, "tier") * 100, steamID, "points")
 		UpdatePersonalRecordsCache()
 
 		PrintMessage(HUD_PRINTTALK, "[" .. ALT_NAME .. "] " .. name .. " finished " .. style .. " in " .. ConvertTime(time) .. ".")

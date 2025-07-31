@@ -11,18 +11,12 @@ function WriteToJSON()
 end
 
 function ReadFromJSON()
-	playerCache = file.Exists("bhop/player.json", "DATA") and util.JSONToTable(file.Read("bhop/player.json", "DATA"), false, true) or {}
 	local map = game.GetMap()
 	local tempCache = file.Exists("bhop/" .. map .. ".json", "DATA") and util.JSONToTable(file.Read("bhop/" .. map .. ".json", "DATA"), false, true) or {}
+	playerCache = file.Exists("bhop/player.json", "DATA") and util.JSONToTable(file.Read("bhop/player.json", "DATA"), false, true) or {}
 	personalRecordsCache = ReadFromCache(tempCache, {}, "personalRecords")
 	worldRecordsCache = ReadFromCache(tempCache, {}, "worldRecords")
 	mapCache = ReadFromCache(tempCache, {}, "map")
-
-	playerCache = {						--add your steamID here
-		["STEAM_0:0:623003536"] = {
-			["role"] = "Admin", 
-		}
-	}
 
 	startZone:SetPos(Vector(ReadFromCache(mapCache, 0, "startX"), ReadFromCache(mapCache, 0, "startY"), ReadFromCache(mapCache, 0, "startZ")))
 	endZone:SetPos(Vector(ReadFromCache(mapCache, 0, "endX"), ReadFromCache(mapCache, 0, "endY"), ReadFromCache(mapCache, 0, "endZ")))

@@ -27,10 +27,8 @@ local function UpdateZone(pos2, zone)
 end
 
 function GM:PlayerSay(sender, text, teamChat)
-	text = string.lower(text)
-
 	if text[1] == "!" or text[1] == "/" then
-		text = string.sub(text, 2)
+		text = string.sub(string.lower(text), 2)
 
 		if text == "restart" or text == "r" then
 			sender:Spawn()
@@ -79,6 +77,7 @@ function GM:PlayerSay(sender, text, teamChat)
 				sender:Spawn()
 			else
 				sender:SetTeam(TEAM_SPECTATOR)
+				sender:StripWeapons()
 				sender:Spectate(OBS_MODE_IN_EYE)
 			end
 		end

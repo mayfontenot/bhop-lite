@@ -20,6 +20,18 @@ function GM:Initialize()
 	ReadFromJSON()
 end
 
+function GM:InitPostEntity()
+	for _, v in pairs(ents.FindByClass("func_button")) do
+		v:Fire("Lock")
+		v:SetKeyValue("locked_sound", 0)
+	end
+
+	for _, v in pairs(ents.FindByClass("func_door")) do
+		v:Fire("Lock")
+		v:SetKeyValue("locked_sound", 0)
+	end
+end
+
 function GM:PlayerSelectSpawn(ply, transition)
 	local spawns = ents.FindByClass("info_player_start")
 
@@ -60,6 +72,10 @@ function GM:PlayerInitialSpawn(ply)
 
 	ply:SetViewOffset(Vector(0, 0, 64))
 	ply:SetViewOffsetDucked(Vector(0, 0, 47))
+end
+
+function GM:PlayerSpawn(ply, transition)
+	ply:StripWeapons()
 end
 
 function GM:EntityFireBullets(ent, data)

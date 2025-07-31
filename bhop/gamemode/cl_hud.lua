@@ -67,17 +67,20 @@ function GM:HUDDrawScoreBoard()
 	surface.SetTextPos(scrW / 2 - textWidth / 2, scrH / 2 - scoreboardHeight / 2 + textHeight)
 	surface.DrawText(title)
 
-	surface.SetTextPos(scrW / 2 - scoreboardWidth / 2 + textHeight + (scoreboardWidth / 4 * 0), scrH / 2 - scoreboardHeight / 2 + textHeight * 2)
+	surface.SetTextPos(scrW / 2 - scoreboardWidth / 2 + textHeight + (scoreboardWidth / 5 * 0), scrH / 2 - scoreboardHeight / 2 + textHeight * 2)
 	surface.DrawText("Name")
 
-	surface.SetTextPos(scrW / 2 - scoreboardWidth / 2 + textHeight + (scoreboardWidth / 4 * 1), scrH / 2 - scoreboardHeight / 2 + textHeight * 2)
+	surface.SetTextPos(scrW / 2 - scoreboardWidth / 2 + textHeight + (scoreboardWidth / 5 * 1), scrH / 2 - scoreboardHeight / 2 + textHeight * 2)
 	surface.DrawText("Style")
 
-	surface.SetTextPos(scrW / 2 - scoreboardWidth / 2 + textHeight + (scoreboardWidth / 4 * 2), scrH / 2 - scoreboardHeight / 2 + textHeight * 2)
+	surface.SetTextPos(scrW / 2 - scoreboardWidth / 2 + textHeight + (scoreboardWidth / 5 * 2), scrH / 2 - scoreboardHeight / 2 + textHeight * 2)
 	surface.DrawText("Time")
 
-	surface.SetTextPos(scrW / 2 - scoreboardWidth / 2 + textHeight + (scoreboardWidth / 4 * 3), scrH / 2 - scoreboardHeight / 2 + textHeight * 2)
+	surface.SetTextPos(scrW / 2 - scoreboardWidth / 2 + textHeight + (scoreboardWidth / 5 * 3), scrH / 2 - scoreboardHeight / 2 + textHeight * 2)
 	surface.DrawText("Personal Record")
+
+	surface.SetTextPos(scrW / 2 - scoreboardWidth / 2 + textHeight + (scoreboardWidth / 5 * 4), scrH / 2 - scoreboardHeight / 2 + textHeight * 2)
+	surface.DrawText("Ping")
 
 	for k, v in ipairs(player.GetAll()) do
 		local steamID = v:SteamID()
@@ -86,14 +89,16 @@ function GM:HUDDrawScoreBoard()
 		local personalRecord = ReadFromCache(personalRecordsCache, 0, steamID, style)
 		local timeElapsed = timerStart > 0 and CurTime() - timerStart or 0
 
-		surface.SetTextPos(scrW / 2 - scoreboardWidth / 2 + textHeight + (scoreboardWidth / 4 * 0), scrH / 2 - scoreboardHeight / 2 + textHeight * (k + 2))
+		surface.SetTextPos(scrW / 2 - scoreboardWidth / 2 + textHeight + (scoreboardWidth / 5 * 0), scrH / 2 - scoreboardHeight / 2 + textHeight * (k + 2))
 		surface.DrawText(v:Name())
-		surface.SetTextPos(scrW / 2 - scoreboardWidth / 2 + textHeight + (scoreboardWidth / 4 * 1), scrH / 2 - scoreboardHeight / 2 + textHeight * (k + 2))
+		surface.SetTextPos(scrW / 2 - scoreboardWidth / 2 + textHeight + (scoreboardWidth / 5 * 1), scrH / 2 - scoreboardHeight / 2 + textHeight * (k + 2))
 		surface.DrawText(style)
-		surface.SetTextPos(scrW / 2 - scoreboardWidth / 2 + textHeight + (scoreboardWidth / 4 * 2), scrH / 2 - scoreboardHeight / 2 + textHeight * (k + 2))
+		surface.SetTextPos(scrW / 2 - scoreboardWidth / 2 + textHeight + (scoreboardWidth / 5 * 2), scrH / 2 - scoreboardHeight / 2 + textHeight * (k + 2))
 		surface.DrawText(ConvertTime(timeElapsed))
-		surface.SetTextPos(scrW / 2 - scoreboardWidth / 2 + textHeight + (scoreboardWidth / 4 * 3), scrH / 2 - scoreboardHeight / 2 + textHeight * (k + 2))
+		surface.SetTextPos(scrW / 2 - scoreboardWidth / 2 + textHeight + (scoreboardWidth / 5 * 3), scrH / 2 - scoreboardHeight / 2 + textHeight * (k + 2))
 		surface.DrawText(ConvertTime(personalRecord))
+		surface.SetTextPos(scrW / 2 - scoreboardWidth / 2 + textHeight + (scoreboardWidth / 5 * 4), scrH / 2 - scoreboardHeight / 2 + textHeight * (k + 2))
+		surface.DrawText(v:Ping())
 	end
 end
 
