@@ -1,6 +1,7 @@
 AddCSLuaFile("shared.lua")
 AddCSLuaFile("sh_cache.lua")
 AddCSLuaFile("sh_movement.lua")
+AddCSLuaFile("sh_rngfix.lua")
 AddCSLuaFile("sh_timer.lua")
 AddCSLuaFile("cl_init.lua")
 AddCSLuaFile("cl_cache.lua")

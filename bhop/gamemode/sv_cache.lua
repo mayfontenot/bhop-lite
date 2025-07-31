@@ -13,6 +13,7 @@ end
 function ReadFromJSON()
 	local map = game.GetMap()
 	local tempCache = file.Exists("bhop/" .. map .. ".json", "DATA") and util.JSONToTable(file.Read("bhop/" .. map .. ".json", "DATA"), false, true) or {}
+
 	playerCache = file.Exists("bhop/player.json", "DATA") and util.JSONToTable(file.Read("bhop/player.json", "DATA"), false, true) or {}
 	personalRecordsCache = ReadFromCache(tempCache, {}, "personalRecords")
 	worldRecordsCache = ReadFromCache(tempCache, {}, "worldRecords")

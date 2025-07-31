@@ -1,6 +1,7 @@
 gamemodes\bhop\gamemode\shared.lua
 gamemodes\bhop\gamemode\sh_cache.lua
 gamemodes\bhop\gamemode\sh_movement.lua
+gamemodes\bhop\gamemode\sh_rngfix.lua
 gamemodes\bhop\gamemode\sh_timer.lua
 gamemodes\bhop\gamemode\cl_init.lua
 gamemodes\bhop\gamemode\cl_cache.lua

@@ -2,6 +2,7 @@ ALT_NAME = "BHop Lite"
 TEAM_SPECTATOR, TEAM_PLAYER = 1, 2
 STYLE_AUTO, STYLE_MANUAL, STYLE_SIDEWAYS, STYLE_HALF_SIDEWAYS, STYLE_W_ONLY, STYLE_A_ONLY = "Auto", "Manual", "Sideways", "Half-sideways", "W-only", "A-only"
 ROLE_USER, ROLE_MOD, ROLE_ADMIN = "User", "Mod", "Admin"
+
 models = {
 	"models/player/gasmask.mdl", 
 	"models/player/riot.mdl", 
@@ -15,6 +16,7 @@ models = {
 
 include("sh_cache.lua")
 include("sh_movement.lua")
+include("sh_rngfix.lua")
 include("sh_timer.lua")
 
 GM.Name = "Bunny Hop"

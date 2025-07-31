@@ -3,13 +3,13 @@ function GM:SetupMove(ply, mv, cmd)
 
 	if ply:GetMoveType() ~= MOVETYPE_WALK then return end
 
-	if ReadFromCache(tempPlayerCache, STYLE_AUTO, ply:SteamID(), "style") ~= STYLE_MANUAL and onGround and cmd:KeyDown(IN_JUMP) and ply:WaterLevel() < 2 then
-		mv:SetOldButtons(bit.band(mv:GetButtons(), bit.bnot(IN_JUMP)))			--autohop
+	if ReadFromCache(tempPlayerCache, STYLE_AUTO, ply:SteamID(), "style") ~= STYLE_MANUAL and onGround and cmd:KeyDown(IN_JUMP) and ply:WaterLevel() < 2 then	--autohop
+		mv:SetOldButtons(mv:GetButtons() - IN_JUMP)
 	end
 
-	if onGround and ply:Crouching() and cmd:KeyDown(IN_JUMP) then
+	if onGround and ply:Crouching() and cmd:KeyDown(IN_JUMP) then	--crouch boost fix
         ply:SetDuckSpeed(0)
-        ply:SetUnDuckSpeed(0)				--crouch boost fix
+        ply:SetUnDuckSpeed(0)
     else
         ply:SetDuckSpeed(0.4)
         ply:SetUnDuckSpeed(0.2)
@@ -37,6 +37,8 @@ function GM:SetupMove(ply, mv, cmd)
 	end
 end
 
+local AIR_ACCEL = 500
+
 function GM:Move(ply, mv)
 	if ply:OnGround() or ply:Team() == TEAM_SPECTATOR then return end
 
@@ -45,19 +47,18 @@ function GM:Move(ply, mv)
 	local forward, right = ang:Forward(), ang:Right()
 	local fSpeed, sSpeed = mv:GetForwardSpeed(), mv:GetSideSpeed()
 	local maxSpeed = mv:GetMaxSpeed()
-	local airAccel = 500
 
 	if style == STYLE_NORMAL then
 		if mv:KeyDown(IN_MOVELEFT) then
-			sSpeed = sSpeed - airAccel
+			sSpeed = sSpeed - AIR_ACCEL
 		elseif mv:KeyDown(IN_MOVERIGHT) then
-			sSpeed = sSpeed + airAccel
+			sSpeed = sSpeed + AIR_ACCEL
 		end
 	elseif style == STYLE_SIDE_WAYS then
 		if mv:KeyDown(IN_FORWARD) then
-			fSpeed = fSpeed + airAccel
+			fSpeed = fSpeed + AIR_ACCEL
 		elseif mv:KeyDown(IN_BACK) then
-			fSpeed = fSpeed - airAccel
+			fSpeed = fSpeed - AIR_ACCEL
 		end
 	end
 
@@ -68,6 +69,7 @@ function GM:Move(ply, mv)
 
 	local wishVel = forward * fSpeed + right * sSpeed
 	wishVel.z = 0
+
 	local wishSpeed = wishVel:Length()
 
 	if wishSpeed > maxSpeed then
@@ -77,13 +79,14 @@ function GM:Move(ply, mv)
 
 	local wishSpeedDir = wishSpeed
 	wishSpeedDir = math.Clamp(wishSpeedDir, 0, 32.8)
+
 	local wishDir = wishVel:GetNormal()
 	local currentDir = mv:GetVelocity():Dot(wishDir)
 	local addSpeed = wishSpeedDir - currentDir
 
 	if addSpeed <= 0 then return end
 
-	local accelSpeed = airAccel * FrameTime() * wishSpeed
+	local accelSpeed = AIR_ACCEL * FrameTime() * wishSpeed
 
 	if accelSpeed > addSpeed then
 		accelSpeed = addSpeed
