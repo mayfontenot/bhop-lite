@@ -8,6 +8,10 @@ AddCSLuaFile("cl_cache.lua")
 AddCSLuaFile("cl_hud.lua")
 
 include("shared.lua")
+include("sh_cache.lua")
+include("sh_movement.lua")
+include("sh_rngfix.lua")
+include("sh_timer.lua")
 include("sv_cache.lua")
 include("sv_movement.lua")
 include("sv_timer.lua")
@@ -21,6 +25,8 @@ function GM:Initialize()
 	ReadFromJSON()
 end
 
+local spawns = nil
+
 function GM:InitPostEntity()
 	for _, v in pairs(ents.FindByClass("func_button")) do
 		v:Fire("Lock")
@@ -31,10 +37,8 @@ function GM:InitPostEntity()
 		v:Fire("Lock")
 		v:SetKeyValue("locked_sound", 0)
 	end
-end
 
-function GM:PlayerSelectSpawn(ply, transition)
-	local spawns = ents.FindByClass("info_player_start")
+	spawns = ents.FindByClass("info_player_start")
 
 	if #spawns == 0 then
 		spawns = ents.FindByClass("info_player_counterterrorist")
@@ -43,7 +47,9 @@ function GM:PlayerSelectSpawn(ply, transition)
 	if #spawns == 0 then
 		spawns = ents.FindByClass("info_player_terrorist")
 	end
+end
 
+function GM:PlayerSelectSpawn(ply, transition)
 	return spawns[math.random(#spawns)]
 end
 

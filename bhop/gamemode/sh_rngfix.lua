@@ -109,10 +109,10 @@ function Duck(ply, origin, mins, max)
 	local ducking = ply:Crouching()
 	local nextducking = ducking --assume we stay crouched
 	
-	if not ducking and (btns[ply] and IN_DUCK) ~= 0 then 
+	if not ducking and bit.band(btns[ply], IN_DUCK) ~= 0 then 
 		origin.z = origin.z + duckdelta --shift origin up so bbox sits lower
 		nextducking = true 
-	elseif (btns[ply] and IN_DUCK) == 0 and ducking then 
+	elseif bit.band(btns[ply], IN_DUCK) == 0 and ducking then 
 		origin.z = origin.z - duckdelta --try moving bbox up unduck
 
 		local tr = util.TraceHull{			--check if we can safely unduck
@@ -353,7 +353,7 @@ function DoPreTickChecks(ply, mv, cmd)
 			}
 
 			if tr_edge.Hit then
-				if (tr_edge.HitNormal.z >= MIN_STANDABLE_ZNRM) then return end 
+				if tr_edge.HitNormal.z >= MIN_STANDABLE_ZNRM then return end 
 				if TracePlayerBBoxForGround(tickEnd, tickEndBelow, vMins, vMaxs, ply) then return end
 			end 
 			

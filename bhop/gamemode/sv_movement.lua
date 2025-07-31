@@ -1,7 +1,7 @@
 function GM:KeyPress(ply, key)
 	if ply:Team() == TEAM_SPECTATOR then
 		if key == IN_ATTACK then
-			local players = player.GetAll()
+			local players = team.GetPlayers(TEAM_PLAYER)
 			local target = ply:GetObserverTarget() or players[1]
 			local targetKey = table.KeyFromValue(players, target)
 
@@ -12,7 +12,7 @@ function GM:KeyPress(ply, key)
 				ply:SpectateEntity(target)
 			end
 		elseif key == IN_ATTACK2 then
-			local players = player.GetAll()
+			local players = team.GetPlayers(TEAM_PLAYER)
 			local target = ply:GetObserverTarget() or players[1]
 			local targetKey = table.KeyFromValue(players, target)
 
@@ -31,5 +31,11 @@ function GM:OnPlayerHitGround(ply, inWater, onFloater, speed)
 
 	if ply.jumps > 1 and ply.jumps % 6 == 0 then
 		ply:SendLua('chat.AddText(Color(151, 211, 255), "[" .. ALT_NAME .. "] Jump ' .. ply.jumps .. ': ' .. math.Round(ply:GetVelocity():Length2D()) .. ' u/s")')
+
+		for _, v in pairs(team.GetPlayers(TEAM_SPECTATOR)) do
+			if v:GetObserverTarget() == ply then
+				v:SendLua('chat.AddText(Color(151, 211, 255), "[" .. ALT_NAME .. "] Jump ' .. ply.jumps .. ': ' .. math.Round(ply:GetVelocity():Length2D()) .. ' u/s")')
+			end
+		end
 	end
 end
