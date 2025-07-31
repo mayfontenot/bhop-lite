@@ -1,6 +1,7 @@
 # bhop-lite
 An optimized and lightweight Bunny Hop gamemode for Garry's Mod
 Features a memory caching system and optimized code to reduce network traffic and stutters
+Credit to FiBzY for the crouch boost fix and RNG fix
 WORK IN PROGRESS, many features yet to be implemented
 
 how to use:
