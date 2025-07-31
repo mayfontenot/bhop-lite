@@ -115,9 +115,9 @@ function GM:PlayerSay(sender, text, teamChat)
 			end
 		end
 
-		if text == "save" then
+		if string.StartsWith(text, "map ") then
 			if ReadFromCache(playerCache, ROLE_USER, sender:SteamID(), "role") == ROLE_ADMIN then
-				WriteToJSON()
+				ChangeLevel(string.sub(text, 5))
 			end
 		end
 

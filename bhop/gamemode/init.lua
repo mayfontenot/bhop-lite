@@ -17,6 +17,15 @@ include("sv_movement.lua")
 include("sv_timer.lua")
 include("sv_commands.lua")
 
+function ChangeLevel(map)
+	PrintMessage(HUD_PRINTTALK, "[" .. ALT_NAME .. "] changing level to " .. map .. " in 5 seconds, expect lag")
+	WriteToJSON()
+
+	timer.Simple(5, function()
+		RunConsoleCommand("changelevel", map)
+	end)
+end
+
 startZone, endZone = nil, nil
 
 function GM:Initialize()

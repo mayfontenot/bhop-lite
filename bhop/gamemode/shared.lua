@@ -24,6 +24,6 @@ models = {
 math.randomseed(os.time())
 
 function GM:CreateTeams()
-	team.SetUp(TEAM_SPECTATOR, "Spectator", Color(150, 150, 150))
+	team.SetUp(TEAM_SPECTATOR, "Spectator", Color(125, 125, 125))
 	team.SetUp(TEAM_PLAYER, "Normal", Color(200, 200, 200))
 end

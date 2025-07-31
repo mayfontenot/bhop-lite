@@ -86,7 +86,7 @@ function GM:HUDDrawScoreBoard()
 	surface.DrawText("Ping")
 
 	for k, v in ipairs(player.GetAll()) do
-		local teamColor = team.GetColor(v:Team())
+		local teamColor = v:Team() == TEAM_SPECTATOR and team.GetColor(v:Team()) or Color(255, 255, 255)
 		local steamID = v:SteamID()
 		local style = ReadFromCache(tempPlayerCache, STYLE_AUTO, steamID, "style")
 		local timerStart = ReadFromCache(tempPlayerCache, 0, steamID, "timerStart")
