@@ -11,7 +11,10 @@ end
 
 local function UpdateZone(pos2, zone)
 	local ent = zone == "start" and startZone or endZone
+
+	pos2.z = pos2.z >= ent.pos1.z + 96 and pos2.z or ent.pos1.z + 96
 	local pos = Vector((ent.pos1.x + pos2.x) / 2, (ent.pos1.y + pos2.y) / 2, (ent.pos1.z + pos2.z) / 2)
+
 	local size = Vector(math.abs(pos2.x - ent.pos1.x), math.abs(pos2.y - ent.pos1.y), math.abs(pos2.z - ent.pos1.z))
 
 	WriteToCache(mapCache, pos.x, zone .. "X")

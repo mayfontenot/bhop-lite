@@ -18,7 +18,7 @@ include("sv_timer.lua")
 include("sv_commands.lua")
 
 function ChangeLevel(map)
-	PrintMessage(HUD_PRINTTALK, "[" .. ALT_NAME .. "] changing level to " .. map .. " in 5 seconds, expect lag")
+	PrintMessage(HUD_PRINTTALK, "[" .. ALT_NAME .. "] Changing level to " .. map .. " in 5 seconds, expect lag")
 	WriteToJSON()
 
 	timer.Simple(5, function()
