@@ -7,7 +7,7 @@ function GM:SetupMove(ply, mv, cmd)
 		mv:SetOldButtons(mv:GetButtons() - IN_JUMP)
 	end
 
-	if onGround and ply:Crouching() and cmd:KeyDown(IN_JUMP) then	--crouch boost fix
+	if onGround and ply:Crouching() and cmd:KeyDown(IN_JUMP) then	--crouch boost fix, credit to FiBzY
         ply:SetDuckSpeed(0)
         ply:SetUnDuckSpeed(0)
     else

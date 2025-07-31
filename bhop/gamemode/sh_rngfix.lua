@@ -1,22 +1,22 @@
-﻿-- RNGFix (slope fix only)
--- commented by fibzy for mei
+﻿--RNG fix, credit to FiBzY
+--commented by fibzy for mei
 
--- cache all used tables
-local lastGroundEnt = {} -- stores the last known ground ent the ply was standing on
-local lastTickPredicted = {} -- stores which tick we last predicted movement for this ply 
-local lastBase = {} -- basevel trigger push applied last tick
-local tick = {} -- local tick counter for each player incremented in SetupMove
-local btns = {} -- the current input buttons IN_JUMP IN_DUCK etc... for this tick
-local obtns = {} -- The input buttons from the previous tick 
-local vels  = {} -- predicted velocity stored for this tick
-local lastTeleport = {} -- used in telefix
-local lastCollision = {} -- stores the tick when we last detected a slope collision
-local lastLand = {} -- used in telefix 
+--cache all used tables
+local lastGroundEnt = {} --stores the last known ground ent the ply was standing on
+local lastTickPredicted = {} --stores which tick we last predicted movement for this ply 
+local lastBase = {} --basevel trigger push applied last tick
+local tick = {} --local tick counter for each player incremented in SetupMove
+local btns = {} --the current input buttons IN_JUMP IN_DUCK etc... for this tick
+local obtns = {} --The input buttons from the previous tick 
+local vels  = {} --predicted velocity stored for this tick
+local lastTeleport = {} --used in telefix
+local lastCollision = {} --stores the tick when we last detected a slope collision
+local lastLand = {} --used in telefix 
 
-NON_JUMP_VELOCITY = 140 -- this is the maximum upward Z velocity a ply can have and still be considered as not jumping defined in source engine
-MIN_STANDABLE_ZNRM = 0.7 -- this is the min stand z vector nrm is it a slope? or not 
+NON_JUMP_VELOCITY = 140 --this is the maximum upward Z velocity a ply can have and still be considered as not jumping defined in source engine
+MIN_STANDABLE_ZNRM = 0.7 --this is the min stand z vector nrm is it a slope? or not 
 
-local unducked = Vector(16, 16, 62) -- fix hulls to match gmod not css there is a 17 units differece 
+local unducked = Vector(16, 16, 62) --fix hulls to match gmod not css there is a 17 units differece 
 local ducked = Vector(16, 16, 45)
 local duckdelta = unducked.z - ducked.z
 
