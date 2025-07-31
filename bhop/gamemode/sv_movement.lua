@@ -25,9 +25,9 @@ function GM:KeyPress(ply, key)
 end
 
 function GM:OnPlayerHitGround(ply, inWater, onFloater, speed)
-	ply.jumps = ply:KeyDown(IN_JUMP) and ply.jumps + 1 or 0
+	ply.jumps = ply:KeyDown(IN_JUMP) and ply.jumps + 1 or 1
 
-	if ply.jumps > 0 and ply.jumps % 6 == 0 then
+	if ply.jumps > 1 and ply.jumps % 6 == 0 then
 		ply:SendLua('chat.AddText(Color(151, 211, 255), "[" .. ALT_NAME .. "] Jump ' .. ply.jumps .. ': ' .. math.Round(ply:GetVelocity():Length2D()) .. ' u/s")')
 	end
 end
