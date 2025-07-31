@@ -25,7 +25,7 @@ end
 
 function ENT:EndTouch(ent)
 	if IsValid(ent) then
-		if ent:IsPlayer() and ent:Team() ~= TEAM_SPECTATOR and ent:GetVelocity():Length2D() <= 280 then
+		if ent:IsPlayer() and ent:Team() ~= TEAM_SPECTATOR and ent:GetMoveType() == MOVETYPE_WALK and ent:GetVelocity():Length2D() <= 280 then
 			WriteToCache(tempPlayerCache, CurTime(), ent:SteamID(), "timerStart")
 			UpdateTempPlayerCache()
 		end

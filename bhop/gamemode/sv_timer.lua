@@ -11,12 +11,16 @@ function EndTimer(ply, timerEnd)
 		UpdatePersonalRecordsCache()
 		UpdateWorldRecordsCache()
 
-		PrintMessage(HUD_PRINTTALK, "[" .. ALT_NAME .. "] " .. name .. " set a new " .. style .. " World Record of " .. ConvertTime(time) .. " s (-" .. ConvertTime(worldRecord - time) .. " s)")
+		local diff = worldRecord > 0 and " s (" .. ConvertTime(time - worldRecord) .. " s)" or ""
+
+		PrintMessage(HUD_PRINTTALK, "[" .. ALT_NAME .. "] " .. name .. " set a new " .. style .. " World Record of " .. ConvertTime(time) .. diff)
 	elseif time < personalRecord or personalRecord == 0 then
 		WriteToCache(personalRecordsCache, time, steamID, style)
 		UpdatePersonalRecordsCache()
 
-		PrintMessage(HUD_PRINTTALK, "[" .. ALT_NAME .. "] " .. name .. " finished " .. style .. " in " .. ConvertTime(time) .. " s (-" .. ConvertTime(personalRecord - time) .. " s)")
+		local diff = personalRecord > 0 and " s (" .. ConvertTime(time - personalRecord) .. " s)" or ""
+
+		PrintMessage(HUD_PRINTTALK, "[" .. ALT_NAME .. "] " .. name .. " finished " .. style .. " in " .. ConvertTime(time) .. diff)
 	else
 		ply:SendLua('chat.AddText(Color(151, 211, 255), "[" .. ALT_NAME .. "] You did not beat your Personal Record (+" .. ConvertTime(' .. time - personalRecord .. ') .. " s)")')
 	end
