@@ -28,9 +28,10 @@ function GM:HUDPaint()
 	local style = ReadFromCache(tempPlayerCache, STYLE_AUTO, steamID, "style")
 	local timerStart = ReadFromCache(tempPlayerCache, 0, steamID, "timerStart")
 	local worldRecord = ReadFromCache(worldRecordsCache, 0, style, "time")
+	local worldRecordName = ReadFromCache(worldRecordsCache, 0, style, "name")
 	local personalRecord = ReadFromCache(personalRecordsCache, 0, steamID, style)
 	local timeElapsed = timerStart > 0 and CurTime() - timerStart or 0
-	local longestString = "PR " .. ConvertTime(personalRecord) .. " (+" .. ConvertTime(personalRecord - worldRecord) .. ")"
+	local longestString = "WR " .. ConvertTime(worldRecord) .. " (" .. worldRecordName .. ")"
 	local textWidth, textHeight = surface.GetTextSize(longestString)
 
 	hudWidth = textWidth + textHeight * 2
@@ -47,8 +48,8 @@ function GM:HUDPaint()
 	AddHudRow(style, 1)
 	AddHudRow(ConvertTime(timeElapsed), 2)
 	AddHudRow(velocity .. " u/s", 3)
-	AddHudRow(longestString, 4)
-	AddHudRow("WR " .. ConvertTime(worldRecord) .. "", 5)
+	AddHudRow("PR " .. ConvertTime(personalRecord), 4)
+	AddHudRow(longestString, 5)
 end
 
 local scoreboardWidth, scoreboardHeight = SCR_W / 2, SCR_H / 2
@@ -85,14 +86,17 @@ function GM:HUDDrawScoreBoard()
 	surface.DrawText("Ping")
 
 	for k, v in ipairs(player.GetAll()) do
+		local teamColor = team.GetColor(v:Team())
 		local steamID = v:SteamID()
 		local style = ReadFromCache(tempPlayerCache, STYLE_AUTO, steamID, "style")
 		local timerStart = ReadFromCache(tempPlayerCache, 0, steamID, "timerStart")
 		local personalRecord = ReadFromCache(personalRecordsCache, 0, steamID, style)
 		local timeElapsed = timerStart > 0 and CurTime() - timerStart or 0
 
+		surface.SetTextColor(teamColor.r, teamColor.g, teamColor.b)
 		surface.SetTextPos(SCR_W / 2 - scoreboardWidth / 2 + textHeight + (scoreboardWidth / 5 * 0), SCR_H / 2 - scoreboardHeight / 2 + textHeight * (k + 2))
 		surface.DrawText(v:Name())
+		surface.SetTextColor(255, 255, 255)
 		surface.SetTextPos(SCR_W / 2 - scoreboardWidth / 2 + textHeight + (scoreboardWidth / 5 * 1), SCR_H / 2 - scoreboardHeight / 2 + textHeight * (k + 2))
 		surface.DrawText(style)
 		surface.SetTextPos(SCR_W / 2 - scoreboardWidth / 2 + textHeight + (scoreboardWidth / 5 * 2), SCR_H / 2 - scoreboardHeight / 2 + textHeight * (k + 2))

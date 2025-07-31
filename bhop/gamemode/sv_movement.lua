@@ -19,7 +19,7 @@ function GM:KeyPress(ply, key)
 			targetKey = targetKey - 1 < 1 and #players or targetKey - 1
 			target = players[targetKey]
 
-			if IsValid(target) and target ~= ply then
+			if IsValid(target) and target ~= ply and target:Team() ~= TEAM_SPECTATOR then
 				ply:SpectateEntity(target)
 			end
 		end
