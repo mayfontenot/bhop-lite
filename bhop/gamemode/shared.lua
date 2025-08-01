@@ -21,10 +21,16 @@ models = {
 	"models/player/phoenix.mdl"
 }
 
+commands = {
+	"restart", "usp", "glock", "remove", "auto", "manual", "sideways", "halfsideways", "wonly", "aonly", "spectate", "tier <tier>", "map <map>", "start pos1", "start pos2", "end pos1", "end pos2"
+}
+
 math.randomseed(os.time())
 
 function ConvertTime(ns)
-    if (type(ns)=='boolean') then ns = 0 end
+    if type(ns) == 'boolean' then
+    	ns = 0
+    end
 
     if ns > 3600 then
         return string.format("%d:%.2d:%.2d.%.03i", math.floor(ns / 3600), math.floor(ns / 60 % 60), math.floor(ns % 60), (ns - math.floor(ns)) * 1000)

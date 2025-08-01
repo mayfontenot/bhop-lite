@@ -5,6 +5,7 @@ AddCSLuaFile("sh_rngfix.lua")
 AddCSLuaFile("cl_init.lua")
 AddCSLuaFile("cl_cache.lua")
 AddCSLuaFile("cl_hud.lua")
+AddCSLuaFile("cl_menu.lua")
 
 include("shared.lua")
 include("sh_cache.lua")

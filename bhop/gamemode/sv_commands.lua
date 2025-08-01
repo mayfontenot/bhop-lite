@@ -33,47 +33,29 @@ function GM:PlayerSay(sender, text, teamChat)
 	if text[1] == "!" or text[1] == "/" then
 		text = string.sub(string.lower(text), 2)
 
-		if text == "restart" or text == "r" then
+		if text == "commands" or text == "help" then
+			sender:SendLua('PrintTable(commands);chat.AddText(Color(151, 211, 255), "[" .. ALT_NAME .. "] See console for a table of commands.")')
+		elseif text == "restart" or text == "r" then
 			sender:Spawn()
-		end
-
-		if text == "usp" then
+		elseif text == "usp" then
 			sender:Give("weapon_usp")
-		end
-
-		if text == "glock" then
+		elseif text == "glock" then
 			sender:Give("weapon_glock")
-		end
-
-		if text == "remove" then
+		elseif text == "remove" then
 			sender:StripWeapons()
-		end
-
-		if text == "auto" or text == "normal" or text == "n" then
+		elseif text == "auto" or text == "normal" or text == "n" then
 			ChangeStyle(sender, STYLE_AUTO)
-		end
-
-		if text == "manual" or text == "easy" or text == "legit" then
+		elseif text == "manual" or text == "easy" or text == "legit" then
 			ChangeStyle(sender, STYLE_MANUAL)
-		end
-
-		if text == "sideways" or text == "sw" then
+		elseif text == "sideways" or text == "sw" then
 			ChangeStyle(sender, STYLE_SIDEWAYS)
-		end
-
-		if text == "halfsideways" or text == "hsw" then
+		elseif text == "halfsideways" or text == "hsw" then
 			ChangeStyle(sender, STYLE_HALF_SIDEWAYS)
-		end
-
-		if text == "wonly" or text == "w" then
+		elseif text == "wonly" or text == "w" then
 			ChangeStyle(sender, STYLE_W_ONLY)
-		end
-
-		if text == "aonly" or text == "a" then
+		elseif text == "aonly" or text == "a" then
 			ChangeStyle(sender, STYLE_A_ONLY)
-		end
-
-		if text == "spectate" or text == "spec" then
+		elseif text == "spectate" or text == "spec" then
 			if sender:Team() == TEAM_SPECTATOR then
 				sender:SetTeam(TEAM_PLAYER)
 				sender:UnSpectate()
@@ -83,45 +65,35 @@ function GM:PlayerSay(sender, text, teamChat)
 				sender:StripWeapons()
 				sender:Spectate(OBS_MODE_IN_EYE)
 			end
-		end
-
-		if string.StartsWith(text, "tier ") then
+		elseif string.StartsWith(text, "tier ") then
 			if ReadFromCache(playerCache, ROLE_USER, sender:SteamID(), "role") == ROLE_ADMIN then
 				local tier = string.sub(text, 6)
 
 				WriteToCache(mapCache, tier, "tier")
 				UpdateMapCache()
 			end
-		end
-
-		if text == "start pos1" then
-			if ReadFromCache(playerCache, ROLE_USER, sender:SteamID(), "role") == ROLE_ADMIN then
-				startZone.pos1 = sender:GetPos()
-			end
-		end
-
-		if text == "end pos1" then
-			if ReadFromCache(playerCache, ROLE_USER, sender:SteamID(), "role") == ROLE_ADMIN then
-				endZone.pos1 = sender:GetPos()
-			end
-		end
-
-		if text == "start pos2" then
-			if ReadFromCache(playerCache, ROLE_USER, sender:SteamID(), "role") == ROLE_ADMIN then
-				UpdateZone(sender:EyePos(), "start")
-			end
-		end
-
-		if text == "end pos2" then
-			if ReadFromCache(playerCache, ROLE_USER, sender:SteamID(), "role") == ROLE_ADMIN then
-				UpdateZone(sender:EyePos(), "end")
-			end
-		end
-
-		if string.StartsWith(text, "map ") then
+		elseif string.StartsWith(text, "map ") then
 			if ReadFromCache(playerCache, ROLE_USER, sender:SteamID(), "role") == ROLE_ADMIN then
 				ChangeLevel(string.sub(text, 5))
 			end
+		elseif text == "start pos1" then
+			if ReadFromCache(playerCache, ROLE_USER, sender:SteamID(), "role") == ROLE_ADMIN then
+				startZone.pos1 = sender:GetPos()
+			end
+		elseif text == "end pos1" then
+			if ReadFromCache(playerCache, ROLE_USER, sender:SteamID(), "role") == ROLE_ADMIN then
+				endZone.pos1 = sender:GetPos()
+			end
+		elseif text == "start pos2" then
+			if ReadFromCache(playerCache, ROLE_USER, sender:SteamID(), "role") == ROLE_ADMIN then
+				UpdateZone(sender:EyePos(), "start")
+			end
+		elseif text == "end pos2" then
+			if ReadFromCache(playerCache, ROLE_USER, sender:SteamID(), "role") == ROLE_ADMIN then
+				UpdateZone(sender:EyePos(), "end")
+			end
+		else
+			sender:SendLua('chat.AddText(Color(151, 211, 255), "[" .. ALT_NAME .. "] Unknown command. Type /help or /commands for a list of commands.")')
 		end
 
 		return ""

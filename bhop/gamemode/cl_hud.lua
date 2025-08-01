@@ -23,16 +23,17 @@ function GM:HUDPaint()
 	local observerTarget = ply:GetObserverTarget()
 	ply = IsValid(observerTarget) and observerTarget or ply
 
-	local velocity = math.Round(ply:GetVelocity():Length2D())
 	local steamID = ply:SteamID()
 	local style = ReadFromCache(tempPlayerCache, STYLE_AUTO, steamID, "style")
 	local timerStart = ReadFromCache(tempPlayerCache, 0, steamID, "timerStart")
 	local worldRecord = ReadFromCache(worldRecordsCache, 0, style, "time")
-	local worldRecordName = ReadFromCache(worldRecordsCache, nil, style, "name")  or "N/A"
 	local personalRecord = ReadFromCache(personalRecordsCache, 0, steamID, style)
-	local timeElapsed = timerStart > 0 and CurTime() - timerStart or 0
-	local longestString = "WR " .. ConvertTime(worldRecord) .. " s (" .. worldRecordName .. ")"
-	local textWidth, textHeight = surface.GetTextSize(longestString)
+	local time = timerStart > 0 and (ConvertTime(CurTime() - timerStart) .. " s") or "In Zone"
+
+	worldRecord = worldRecord > 0 and ("WR: " .. ConvertTime(worldRecord) .. " s (" .. ReadFromCache(worldRecordsCache, "N/A", style, "name") .. ")") or "WR: None"
+	personalRecord = personalRecord > 0 and ("PR: " .. ConvertTime(personalRecord) .. " s") or "PR: None"
+
+	local textWidth, textHeight = surface.GetTextSize(worldRecord)
 
 	hudWidth = textWidth + textHeight * 2
 	hudHeight = textHeight * (HUD_TEXT_NUM + 2)
@@ -46,10 +47,10 @@ function GM:HUDPaint()
 	end
 
 	AddHudRow(style, 1)
-	AddHudRow(ConvertTime(timeElapsed) .. " s", 2)
-	AddHudRow(velocity .. " u/s", 3)
-	AddHudRow("PR " .. ConvertTime(personalRecord) .. " s", 4)
-	AddHudRow(longestString, 5)
+	AddHudRow(time, 2)
+	AddHudRow(math.Round(ply:GetVelocity():Length2D()) .. " u/s", 3)
+	AddHudRow(personalRecord, 4)
+	AddHudRow(worldRecord, 5)
 end
 
 local scoreboardWidth, scoreboardHeight = SCR_W / 2, SCR_H / 2
@@ -91,7 +92,9 @@ function GM:HUDDrawScoreBoard()
 		local style = ReadFromCache(tempPlayerCache, STYLE_AUTO, steamID, "style")
 		local timerStart = ReadFromCache(tempPlayerCache, 0, steamID, "timerStart")
 		local personalRecord = ReadFromCache(personalRecordsCache, 0, steamID, style)
-		local timeElapsed = timerStart > 0 and CurTime() - timerStart or 0
+		local time = timerStart > 0 and (ConvertTime(CurTime() - timerStart)  .. " s") or "In Zone"
+
+		personalRecord = personalRecord > 0 and (ConvertTime(personalRecord) .. " s") or "None"
 
 		surface.SetTextColor(teamColor.r, teamColor.g, teamColor.b)
 		surface.SetTextPos(SCR_W / 2 - scoreboardWidth / 2 + textHeight + (scoreboardWidth / 5 * 0), SCR_H / 2 - scoreboardHeight / 2 + textHeight * (k + 2))
@@ -100,9 +103,9 @@ function GM:HUDDrawScoreBoard()
 		surface.SetTextPos(SCR_W / 2 - scoreboardWidth / 2 + textHeight + (scoreboardWidth / 5 * 1), SCR_H / 2 - scoreboardHeight / 2 + textHeight * (k + 2))
 		surface.DrawText(style)
 		surface.SetTextPos(SCR_W / 2 - scoreboardWidth / 2 + textHeight + (scoreboardWidth / 5 * 2), SCR_H / 2 - scoreboardHeight / 2 + textHeight * (k + 2))
-		surface.DrawText(ConvertTime(timeElapsed) .. " s")
+		surface.DrawText(time)
 		surface.SetTextPos(SCR_W / 2 - scoreboardWidth / 2 + textHeight + (scoreboardWidth / 5 * 3), SCR_H / 2 - scoreboardHeight / 2 + textHeight * (k + 2))
-		surface.DrawText(ConvertTime(personalRecord) .. " s")
+		surface.DrawText(personalRecord)
 		surface.SetTextPos(SCR_W / 2 - scoreboardWidth / 2 + textHeight + (scoreboardWidth / 5 * 4), SCR_H / 2 - scoreboardHeight / 2 + textHeight * (k + 2))
 		surface.DrawText(v:Ping())
 	end
