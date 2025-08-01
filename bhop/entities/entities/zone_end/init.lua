@@ -10,15 +10,45 @@ function ENT:Initialize()
 	self:SetMoveType(MOVETYPE_VPHYSICS)
 	self:SetCollisionBounds(min, max)
 	self:SetNotSolid(true)
-	self:SetTrigger(true) --necessary for StartTouch
+	self:SetTrigger(true) --necessary for Touch
 	self:DrawShadow(false)
 end
 
 function ENT:StartTouch(ent)
 	if IsValid(ent) then
 		if ent:IsPlayer() and ent:Team() ~= TEAM_SPECTATOR then
-			if ReadFromCache(tempPlayerCache, 0, ent:SteamID(), "timerStart") > 0 then
-				EndTimer(ent, CurTime())
+			local steamID = ent:SteamID()
+			local timerStart = ReadFromCache(tempPlayerCache, 0, steamID, "timerStart")
+
+			if timerStart > 0 then
+				local time = CurTime() - timerStart
+				local name = ent:Name()
+				local style = ReadFromCache(tempPlayerCache, STYLE_AUTO, steamID, "style")
+				local worldRecord = ReadFromCache(worldRecordsCache, 0, style, "time")
+				local personalRecord = ReadFromCache(personalRecordsCache, 0, steamID, style)
+
+				if time < worldRecord or worldRecord == 0 then
+					WriteToCache(worldRecordsCache, {["steamID"] = steamID, ["name"] = name, ["time"] = time}, style)
+					WriteToCache(personalRecordsCache, time, steamID, style)
+					UpdatePersonalRecordsCache()
+					UpdateWorldRecordsCache()
+
+					local diff = worldRecord > 0 and " s (-" .. ConvertTime(worldRecord - time) .. " s)" or ""
+
+					PrintMessage(HUD_PRINTTALK, "[" .. ALT_NAME .. "] " .. name .. " set a new " .. style .. " World Record of " .. ConvertTime(time) .. diff)
+				elseif time < personalRecord or personalRecord == 0 then
+					WriteToCache(personalRecordsCache, time, steamID, style)
+					UpdatePersonalRecordsCache()
+
+					local diff = personalRecord > 0 and " s (-" .. ConvertTime(personalRecord - time) .. " s)" or ""
+
+					PrintMessage(HUD_PRINTTALK, "[" .. ALT_NAME .. "] " .. name .. " finished " .. style .. " in " .. ConvertTime(time) .. diff)
+				else
+					ent:SendLua('chat.AddText(Color(151, 211, 255), "[" .. ALT_NAME .. "] You did not beat your Personal Record (+" .. ConvertTime(' .. time - personalRecord .. ') .. " s)")')
+				end
+
+				WriteToCache(tempPlayerCache, 0, ent:SteamID(), "timerStart")
+				UpdateTempPlayerCache()
 			end
 		end
 	end

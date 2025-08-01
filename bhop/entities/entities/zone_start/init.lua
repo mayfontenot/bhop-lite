@@ -10,24 +10,40 @@ function ENT:Initialize()
 	self:SetMoveType(MOVETYPE_VPHYSICS)
 	self:SetCollisionBounds(min, max)
 	self:SetNotSolid(true)
-	self:SetTrigger(true) --necessary for StartTouch
+	self:SetTrigger(true) --necessary for Touch
 	self:DrawShadow(false)
 end
 
 function ENT:StartTouch(ent)
 	if IsValid(ent) then
 		if ent:IsPlayer() and ent:Team() ~= TEAM_SPECTATOR then
-			WriteToCache(tempPlayerCache, 0, ent:SteamID(), "timerStart")
-			UpdateTempPlayerCache()
+			if ent:OnGround() and not ent:KeyDown(IN_JUMP) then
+				WriteToCache(tempPlayerCache, 0, ent:SteamID(), "timerStart")
+				UpdateTempPlayerCache()
+			end
 		end
 	end
 end
 
 function ENT:EndTouch(ent)
 	if IsValid(ent) then
-		if ent:IsPlayer() and ent:Team() ~= TEAM_SPECTATOR and ent:GetMoveType() == MOVETYPE_WALK and ent:GetVelocity():Length2D() <= 280 then
+		if ent:IsPlayer() and ent:Team() ~= TEAM_SPECTATOR and ent:GetMoveType() == MOVETYPE_WALK and ent:OnGround() and not ent:KeyDown(IN_JUMP) then
 			WriteToCache(tempPlayerCache, CurTime(), ent:SteamID(), "timerStart")
 			UpdateTempPlayerCache()
+		end
+	end
+end
+
+function ENT:Touch(ent)
+	if IsValid(ent) then
+		if ent:IsPlayer() and ent:Team() ~= TEAM_SPECTATOR and ent:GetMoveType() == MOVETYPE_WALK then
+			if not ent:OnGround() and ReadFromCache(tempPlayerCache, 0, ent:SteamID(), "timerStart") == 0 then
+				WriteToCache(tempPlayerCache, CurTime(), ent:SteamID(), "timerStart")
+				UpdateTempPlayerCache()
+			elseif ent:OnGround() and not ent:KeyDown(IN_JUMP) and ReadFromCache(tempPlayerCache, 0, ent:SteamID(), "timerStart") > 0 then
+				WriteToCache(tempPlayerCache, 0, ent:SteamID(), "timerStart")
+				UpdateTempPlayerCache()
+			end
 		end
 	end
 end
