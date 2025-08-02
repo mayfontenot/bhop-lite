@@ -1,9 +1,56 @@
+local function GetSpectators(ply)
+	local spectators = {}
+
+	for _, v in pairs(team.GetPlayers(TEAM_SPECTATOR)) do
+		if v:GetObserverTarget() == ply then
+			table.insert(spectators, v)
+		end
+	end
+
+	return spectators
+end
+
 function GM:SetupMove(ply, mv, cmd)
-	local onGround = ply:OnGround()
+	local steamID = ply:SteamID()
+
+	if SERVER and ply:IsBot() then
+		ply:SetMoveType(MOVETYPE_NONE)
+
+		local mvTable = ReadFromCache(wrReplayCache, nil, ReadFromCache(tempPlayerCache, STYLE_AUTO, steamID, "style"))
+
+		if mvTable then
+			if not ply.replayMV then
+				ply.replayMV = 1
+			end
+
+			if #GetSpectators(ply) > 0 and ply.replayMV == 1 then
+				WriteToCache(tempPlayerCache, CurTime(), steamID, "timerStart")
+				UpdateTempPlayerCache()
+			end
+
+			mv:SetOrigin(Vector(mvTable[ply.replayMV]["posX"], mvTable[ply.replayMV]["posY"], mvTable[ply.replayMV]["posZ"]))
+			ply:SetEyeAngles(Angle(mvTable[ply.replayMV]["angP"], mvTable[ply.replayMV]["angY"], 0))
+			ply:SetFOV(100)
+			ply:SetRenderMode(RENDERMODE_NONE)
+
+			if #GetSpectators(ply) > 0 then
+				ply.replayMV = ply.replayMV + 1
+			end
+
+			if ply.replayMV > #mvTable or #GetSpectators(ply) == 0 then
+				WriteToCache(tempPlayerCache, 0, steamID, "timerStart")
+				UpdateTempPlayerCache()
+
+				ply.replayMV = 1
+			end
+		end
+	end
 
 	if ply:GetMoveType() ~= MOVETYPE_WALK then return end
 
-	if ReadFromCache(tempPlayerCache, STYLE_AUTO, ply:SteamID(), "style") ~= STYLE_MANUAL and onGround and cmd:KeyDown(IN_JUMP) and ply:WaterLevel() < 2 then	--autohop
+	local onGround = ply:OnGround()
+
+	if ReadFromCache(tempPlayerCache, STYLE_AUTO, steamID, "style") ~= STYLE_MANUAL and onGround and cmd:KeyDown(IN_JUMP) and ply:WaterLevel() < 2 then	--autohop
 		mv:SetOldButtons(mv:GetButtons() - IN_JUMP)
 	end
 
@@ -17,7 +64,7 @@ function GM:SetupMove(ply, mv, cmd)
 
 	if onGround then return end
 
-	local style = ReadFromCache(tempPlayerCache, STYLE_AUTO, ply:SteamID(), "style")
+	local style = ReadFromCache(tempPlayerCache, STYLE_AUTO, steamID, "style")
 
 	if style == STYLE_SIDEWAYS or style == STYLE_W_ONLY then			--movement restrictions
 		mv:SetSideSpeed(0)

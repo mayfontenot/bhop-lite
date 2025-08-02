@@ -28,7 +28,11 @@ function GM:HUDPaint()
 	local timerStart = ReadFromCache(tempPlayerCache, 0, steamID, "timerStart")
 	local worldRecord = ReadFromCache(worldRecordsCache, 0, style, "time")
 	local personalRecord = ReadFromCache(personalRecordsCache, 0, steamID, style)
-	local time = timerStart > 0 and (FormatTime(CurTime() - timerStart) .. " s") or "In Zone"
+	local time = timerStart > 0 and (FormatTime(CurTime() - timerStart) .. " s") or "Stopped"
+
+	if ply:IsBot() then
+		personalRecord = worldRecord
+	end
 
 	worldRecord = worldRecord > 0 and ("WR: " .. FormatRecord(worldRecord) .. " s (" .. ReadFromCache(worldRecordsCache, "N/A", style, "name") .. ")") or "WR: None"
 	personalRecord = personalRecord > 0 and ("PR: " .. FormatRecord(personalRecord) .. " s") or "PR: None"
@@ -79,7 +83,7 @@ function GM:HUDDrawScoreBoard()
 
 	AddScoreboardRow(1, 1, GetHostName())
 	AddScoreboardRow(2, 1, "Tier " .. ReadFromCache(mapCache, 1, "tier") .. " " .. game.GetMap())
-	AddScoreboardRow(3, 5, "Name", "Style", "Time", "Personal Record", "Ping")
+	AddScoreboardRow(3, 5, "Name", "Style", "Timer", "Personal Record", "Ping")
 
 	for k, v in ipairs(player.GetAll()) do
 		local teamColor = v:Team() == TEAM_SPECTATOR and team.GetColor(v:Team()) or Color(255, 255, 255)
@@ -90,7 +94,13 @@ function GM:HUDDrawScoreBoard()
 		local personalRecord = ReadFromCache(personalRecordsCache, 0, steamID, style)
 		personalRecord = personalRecord > 0 and (FormatRecord(personalRecord) .. " s") or "None"
 
-		local time = timerStart > 0 and (FormatTime(CurTime() - timerStart)  .. " s") or "In Zone"
+		if v:IsBot() then
+			local worldRecord = ReadFromCache(worldRecordsCache, 0, style, "time")
+			worldRecord = worldRecord > 0 and (FormatRecord(worldRecord) .. " s") or "None"
+			personalRecord = worldRecord
+		end
+
+		local time = timerStart > 0 and (FormatTime(CurTime() - timerStart)  .. " s") or "Stopped"
 
 		AddScoreboardRow(3 + k, 5, v:Name(), style, time, personalRecord, v:Ping())
 	end

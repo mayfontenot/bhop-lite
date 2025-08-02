@@ -59,6 +59,8 @@ personalRecordsCache = {} --stores personal records
 worldRecordsCache = {} --stores world records
 mapCache = {} --stores map tier start zone pos and size, end zone pos and size
 mapsCache = {} --stores the names of all maps
+replayCache = {} --stores movedata of players
+wrReplayCache = {} --stores movedata of WR bot
 
 function ReadFromCache(cache, fallback, ...) -- ... represents an infinite number of indices, you can index the cache for as many indices as the cache table allows
 	for _, v in ipairs({...}) do

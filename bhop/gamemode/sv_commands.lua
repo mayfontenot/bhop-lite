@@ -68,6 +68,10 @@ function GM:PlayerSay(sender, text, teamChat)
 				sender:StripWeapons()
 				sender:Spectate(OBS_MODE_IN_EYE)
 			end
+		elseif string.StartsWith(text, "replay ") then
+			--[[local style = string.sub(text, 8)
+
+			player.GetBots()[1]]]
 		elseif string.StartsWith(text, "tier ") then
 			if ReadFromCache(playerCache, ROLE_USER, sender:SteamID(), "role") == ROLE_ADMIN then
 				local tier = string.sub(text, 6)

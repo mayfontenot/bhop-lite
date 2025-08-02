@@ -8,18 +8,19 @@ util.AddNetworkString("mapsCacheUpdate")
 function WriteToJSON()
 	file.CreateDir("bhop")
 	file.Write("bhop/player.json", util.TableToJSON(playerCache, true))
-	file.Write("bhop/" .. game.GetMap() .. ".json", util.TableToJSON({["personalRecords"] = personalRecordsCache, ["worldRecords"] = worldRecordsCache, ["map"] = mapCache}, true))
+	file.Write("bhop/" .. game.GetMap() .. ".json", util.TableToJSON({["personalRecords"] = personalRecordsCache, ["worldRecords"] = worldRecordsCache, ["map"] = mapCache, ["wrReplay"] = wrReplayCache}, true))
 end
 
 function ReadFromJSON()
 	local map = game.GetMap()
-	local tempCache = file.Exists("bhop/" .. map .. ".json", "DATA") and util.JSONToTable(file.Read("bhop/" .. map .. ".json", "DATA"), false, true) or {}
+	local tempCache = file.Exists("bhop/" .. map .. ".json", "DATA") and util.JSONToTable(file.Read("bhop/" .. map .. ".json", "DATA"), false, false) or {}
 
-	playerCache = file.Exists("bhop/player.json", "DATA") and util.JSONToTable(file.Read("bhop/player.json", "DATA"), false, true) or {}
+	playerCache = file.Exists("bhop/player.json", "DATA") and util.JSONToTable(file.Read("bhop/player.json", "DATA"), false, false) or {}
 	personalRecordsCache = ReadFromCache(tempCache, {}, "personalRecords")
 	worldRecordsCache = ReadFromCache(tempCache, {}, "worldRecords")
 	mapCache = ReadFromCache(tempCache, {}, "map")
 	mapsCache = file.Find("maps/*.bsp", "GAME")
+	wrReplayCache = ReadFromCache(tempCache, {}, "wrReplay")
 
 	startZone:SetPos(Vector(ReadFromCache(mapCache, 0, "startX"), ReadFromCache(mapCache, 0, "startY"), ReadFromCache(mapCache, 0, "startZ")))
 	endZone:SetPos(Vector(ReadFromCache(mapCache, 0, "endX"), ReadFromCache(mapCache, 0, "endY"), ReadFromCache(mapCache, 0, "endZ")))

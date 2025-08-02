@@ -54,6 +54,8 @@ function GM:InitPostEntity()
 	if #spawns == 0 then
 		spawns = ents.FindByClass("info_player_terrorist")
 	end
+
+	RunConsoleCommand("bot")
 end
 
 function GM:PlayerSelectSpawn(ply, transition)

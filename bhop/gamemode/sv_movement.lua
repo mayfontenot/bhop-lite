@@ -39,3 +39,20 @@ function GM:OnPlayerHitGround(ply, inWater, onFloater, speed)
 		end
 	end
 end
+
+function GM:FinishMove(ply, mv)
+	if not ply:IsBot() then
+		local steamID = ply:SteamID()
+
+		if ReadFromCache(tempPlayerCache, 0, steamID, "timerStart") > 0 then
+			ply.replayMV = ply.replayMV and ply.replayMV + 1 or 1
+
+			local pos, ang = mv:GetOrigin(), ply:EyeAngles()
+
+			WriteToCache(replayCache, {["posX"] = pos.x, ["posY"] = pos.y, ["posZ"] = pos.z, ["angP"] = ang.p, ["angY"] = ang.y}, steamID, ply.replayMV)
+		else
+			WriteToCache(replayCache, {}, steamID)
+			ply.replayMV = 0
+		end
+	end
+end

@@ -15,8 +15,8 @@ function ENT:Initialize()
 end
 
 function ENT:StartTouch(ent)
-	if IsValid(ent) then
-		if ent:IsPlayer() and ent:Team() ~= TEAM_SPECTATOR then
+	if IsValid(ent) and ent:IsPlayer() then
+		if not ent:IsBot() then
 			local steamID = ent:SteamID()
 			local timerStart = ReadFromCache(tempPlayerCache, 0, steamID, "timerStart")
 
@@ -31,6 +31,7 @@ function ENT:StartTouch(ent)
 					WriteToCache(worldRecordsCache, {["steamID"] = steamID, ["name"] = name, ["time"] = time}, style)
 					WriteToCache(personalRecordsCache, name, steamID, "name")
 					WriteToCache(personalRecordsCache, time, steamID, style)
+					WriteToCache(wrReplayCache, ReadFromCache(replayCache, {}, steamID), style)
 					UpdatePersonalRecordsCache()
 					UpdateWorldRecordsCache()
 
