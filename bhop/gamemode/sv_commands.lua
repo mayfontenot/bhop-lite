@@ -93,7 +93,7 @@ function GM:PlayerSay(sender, text, teamChat)
 				UpdateZone(sender:EyePos(), "end")
 			end
 		else
-			sender:SendLua('chat.AddText(Color(151, 211, 255), "[" .. ALT_NAME .. "] Unknown command. Type /help or /commands for a list of commands.")')
+			sender:SendLua('PrintTable(commands);chat.AddText(Color(151, 211, 255), "[" .. ALT_NAME .. "] Unknown command. See console for a table of commands.")')
 		end
 
 		return ""
