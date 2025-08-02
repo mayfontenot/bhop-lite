@@ -26,3 +26,7 @@ end)
 net.Receive("mapCacheUpdate", function(len, ply)
 	mapCache = net.ReadTable()
 end)
+
+net.Receive("mapsCacheUpdate", function(len, ply)
+	mapsCache = net.ReadTable()
+end)

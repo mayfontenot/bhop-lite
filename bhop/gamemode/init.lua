@@ -32,7 +32,7 @@ function GM:Initialize()
 	ReadFromJSON()
 end
 
-local spawns = nil
+local spawns = {}
 
 function GM:InitPostEntity()
 	for _, v in pairs(ents.FindByClass("func_button")) do
@@ -69,6 +69,7 @@ function GM:PlayerInitialSpawn(ply)
 	UpdatePersonalRecordsCache(ply)
 	UpdateWorldRecordsCache(ply)
 	UpdateMapCache(ply)
+	UpdateMapsCache(ply)
 
 	ply:SetNoCollideWithTeammates(true)
 	ply:SetAvoidPlayers(false)
@@ -133,4 +134,12 @@ end
 
 function GM:PlayerSpray(sprayer)
 	return true
+end
+
+function GM:AllowPlayerPickup(ply, ent)
+	return false
+end
+
+function GM:ShowHelp(ply)
+	ply:ConCommand("bhoplite_menu")
 end

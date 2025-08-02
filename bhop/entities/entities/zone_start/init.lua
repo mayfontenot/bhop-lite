@@ -14,20 +14,9 @@ function ENT:Initialize()
 	self:DrawShadow(false)
 end
 
-function ENT:StartTouch(ent)
-	if IsValid(ent) then
-		if ent:IsPlayer() and ent:Team() ~= TEAM_SPECTATOR then
-			if ent:OnGround() and not ent:KeyDown(IN_JUMP) then
-				WriteToCache(tempPlayerCache, 0, ent:SteamID(), "timerStart")
-				UpdateTempPlayerCache()
-			end
-		end
-	end
-end
-
 function ENT:EndTouch(ent)
 	if IsValid(ent) then
-		if ent:IsPlayer() and ent:Team() ~= TEAM_SPECTATOR and ent:GetMoveType() == MOVETYPE_WALK and ent:OnGround() and not ent:KeyDown(IN_JUMP) then
+		if ent:IsPlayer() and ent:Team() ~= TEAM_SPECTATOR and ent:GetMoveType() == MOVETYPE_WALK and ReadFromCache(tempPlayerCache, 0, ent:SteamID(), "timerStart") == 0 then
 			WriteToCache(tempPlayerCache, CurTime(), ent:SteamID(), "timerStart")
 			UpdateTempPlayerCache()
 		end
@@ -37,10 +26,16 @@ end
 function ENT:Touch(ent)
 	if IsValid(ent) then
 		if ent:IsPlayer() and ent:Team() ~= TEAM_SPECTATOR and ent:GetMoveType() == MOVETYPE_WALK then
+			if ent:OnGround() then
+				ent.groundTicks = ent.groundTicks and ent.groundTicks + 1 or 0
+			else
+				ent.groundTicks = 0
+			end
+
 			if not ent:OnGround() and ReadFromCache(tempPlayerCache, 0, ent:SteamID(), "timerStart") == 0 then
 				WriteToCache(tempPlayerCache, CurTime(), ent:SteamID(), "timerStart")
 				UpdateTempPlayerCache()
-			elseif ent:OnGround() and not ent:KeyDown(IN_JUMP) and ReadFromCache(tempPlayerCache, 0, ent:SteamID(), "timerStart") > 0 then
+			elseif ent.groundTicks >= 15 and ent:OnGround() and not ent:KeyDown(IN_JUMP) and ReadFromCache(tempPlayerCache, 0, ent:SteamID(), "timerStart") > 0 then
 				WriteToCache(tempPlayerCache, 0, ent:SteamID(), "timerStart")
 				UpdateTempPlayerCache()
 			end

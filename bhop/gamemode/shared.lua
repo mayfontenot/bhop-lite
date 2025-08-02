@@ -21,10 +21,6 @@ models = {
 	"models/player/phoenix.mdl"
 }
 
-commands = {
-	"restart", "usp", "glock", "remove", "auto", "manual", "sideways", "halfsideways", "wonly", "aonly", "spectate", "tier <tier>", "map <map>", "start pos1", "start pos2", "end pos1", "end pos2"
-}
-
 math.randomseed(os.time())
 
 function FormatRecord(ns)

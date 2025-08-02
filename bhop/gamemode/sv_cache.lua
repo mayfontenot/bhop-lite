@@ -3,6 +3,7 @@ util.AddNetworkString("playerCacheUpdate")
 util.AddNetworkString("personalRecordsCacheUpdate")
 util.AddNetworkString("worldRecordsCacheUpdate")
 util.AddNetworkString("mapCacheUpdate")
+util.AddNetworkString("mapsCacheUpdate")
 
 function WriteToJSON()
 	file.CreateDir("bhop")
@@ -18,6 +19,7 @@ function ReadFromJSON()
 	personalRecordsCache = ReadFromCache(tempCache, {}, "personalRecords")
 	worldRecordsCache = ReadFromCache(tempCache, {}, "worldRecords")
 	mapCache = ReadFromCache(tempCache, {}, "map")
+	mapsCache = file.Find("maps/*.bsp", "GAME")
 
 	startZone:SetPos(Vector(ReadFromCache(mapCache, 0, "startX"), ReadFromCache(mapCache, 0, "startY"), ReadFromCache(mapCache, 0, "startZ")))
 	endZone:SetPos(Vector(ReadFromCache(mapCache, 0, "endX"), ReadFromCache(mapCache, 0, "endY"), ReadFromCache(mapCache, 0, "endZ")))
@@ -103,6 +105,19 @@ function UpdateMapCache(ply)
 
 	net.Start("mapCacheUpdate")
 	net.WriteTable(mapCache)
+
+	if ply == nil then
+		net.Broadcast()
+	else
+		net.Send(ply)
+	end
+end
+
+function UpdateMapsCache(ply)
+	local ply = ply or nil
+
+	net.Start("mapsCacheUpdate")
+	net.WriteTable(mapsCache)
 
 	if ply == nil then
 		net.Broadcast()

@@ -12,7 +12,7 @@ end
 local function UpdateZone(pos2, zone)
 	local ent = zone == "start" and startZone or endZone
 
-	pos2.z = pos2.z >= ent.pos1.z + 96 and pos2.z or ent.pos1.z + 96
+	pos2.z = pos2.z >= ent.pos1.z + 128 and pos2.z or ent.pos1.z + 128
 	local pos = Vector((ent.pos1.x + pos2.x) / 2, (ent.pos1.y + pos2.y) / 2, (ent.pos1.z + pos2.z) / 2)
 
 	local size = Vector(math.abs(pos2.x - ent.pos1.x), math.abs(pos2.y - ent.pos1.y), math.abs(pos2.z - ent.pos1.z))
@@ -34,7 +34,7 @@ function GM:PlayerSay(sender, text, teamChat)
 		text = string.sub(string.lower(text), 2)
 
 		if text == "commands" or text == "help" then
-			sender:SendLua('PrintTable(commands);chat.AddText(Color(151, 211, 255), "[" .. ALT_NAME .. "] See console for a table of commands.")')
+			sender:SendLua('chat.AddText(Color(151, 211, 255), "[" .. ALT_NAME .. "] Press F1 for a list of commands.")')
 		elseif text == "restart" or text == "r" then
 			sender:Spawn()
 		elseif text == "usp" then
@@ -61,6 +61,9 @@ function GM:PlayerSay(sender, text, teamChat)
 				sender:UnSpectate()
 				sender:Spawn()
 			else
+				WriteToCache(tempPlayerCache, 0, sender:SteamID(), "timerStart")
+				UpdateTempPlayerCache()
+
 				sender:SetTeam(TEAM_SPECTATOR)
 				sender:StripWeapons()
 				sender:Spectate(OBS_MODE_IN_EYE)
@@ -93,7 +96,7 @@ function GM:PlayerSay(sender, text, teamChat)
 				UpdateZone(sender:EyePos(), "end")
 			end
 		else
-			sender:SendLua('PrintTable(commands);chat.AddText(Color(151, 211, 255), "[" .. ALT_NAME .. "] Unknown command. See console for a table of commands.")')
+			sender:SendLua('chat.AddText(Color(151, 211, 255), "[" .. ALT_NAME .. "] Unknown command. Press F1 for a list of commands.")')
 		end
 
 		return ""

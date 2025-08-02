@@ -29,6 +29,7 @@ function ENT:StartTouch(ent)
 
 				if time < worldRecord or worldRecord == 0 then
 					WriteToCache(worldRecordsCache, {["steamID"] = steamID, ["name"] = name, ["time"] = time}, style)
+					WriteToCache(personalRecordsCache, name, steamID, "name")
 					WriteToCache(personalRecordsCache, time, steamID, style)
 					UpdatePersonalRecordsCache()
 					UpdateWorldRecordsCache()
@@ -37,6 +38,7 @@ function ENT:StartTouch(ent)
 
 					PrintMessage(HUD_PRINTTALK, "[" .. ALT_NAME .. "] " .. name .. " set a new " .. style .. " World Record of " .. FormatRecord(time) .. " s" .. diff)
 				elseif time < personalRecord or personalRecord == 0 then
+					WriteToCache(personalRecordsCache, name, steamID, "name")
 					WriteToCache(personalRecordsCache, time, steamID, style)
 					UpdatePersonalRecordsCache()
 
