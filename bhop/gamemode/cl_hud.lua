@@ -28,14 +28,14 @@ function GM:HUDPaint()
 	local timerStart = ReadFromCache(tempPlayerCache, 0, steamID, "timerStart")
 	local worldRecord = ReadFromCache(worldRecordsCache, 0, style, "time")
 	local personalRecord = ReadFromCache(personalRecordsCache, 0, steamID, style)
-	local time = timerStart > 0 and (FormatTime(CurTime() - timerStart) .. " s") or "Stopped"
+	local time = timerStart > 0 and (FormatTime(CurTime() - timerStart)) or "Stopped"
 
 	if ply:IsBot() then
 		personalRecord = worldRecord
 	end
 
-	worldRecord = worldRecord > 0 and ("WR: " .. FormatRecord(worldRecord) .. " s (" .. ReadFromCache(worldRecordsCache, "N/A", style, "name") .. ")") or "WR: None"
-	personalRecord = personalRecord > 0 and ("PR: " .. FormatRecord(personalRecord) .. " s") or "PR: None"
+	worldRecord = worldRecord > 0 and ("WR: " .. FormatRecord(worldRecord) .. " (" .. ReadFromCache(worldRecordsCache, "N/A", style, "name") .. ")") or "WR: None"
+	personalRecord = personalRecord > 0 and ("PR: " .. FormatRecord(personalRecord)) or "PR: None"
 
 	local textWidth, textHeight = surface.GetTextSize(worldRecord)
 
@@ -55,6 +55,23 @@ function GM:HUDPaint()
 	AddHudRow(math.Round(ply:GetVelocity():Length2D()) .. " u/s", 3)
 	AddHudRow(personalRecord, 4)
 	AddHudRow(worldRecord, 5)
+
+	local spectators = GetSpectators(ply)
+
+	if #spectators > 0 then
+		local text = "Spectators (" .. #spectators.. "):"
+		local textWidth, textHeight = surface.GetTextSize(text)
+		surface.SetTextPos(SCR_W - textWidth - textHeight, SCR_H / 3)
+		surface.DrawText(text)
+
+		for k, v in pairs(spectators) do
+			local text = v:Name()
+			textWidth, textHeight = surface.GetTextSize(text)
+			textHeight = textHeight * 1.5
+			surface.SetTextPos(SCR_W - textWidth - textHeight, SCR_H / 3 + k * textHeight)
+			surface.DrawText(text)
+		end
+	end
 end
 
 local SCOREBOARD_WIDTH, SCOREBOARD_HEIGHT = SCR_W / 2, SCR_H / 1.75
@@ -92,15 +109,15 @@ function GM:HUDDrawScoreBoard()
 		local timerStart = ReadFromCache(tempPlayerCache, 0, steamID, "timerStart")
 
 		local personalRecord = ReadFromCache(personalRecordsCache, 0, steamID, style)
-		personalRecord = personalRecord > 0 and (FormatRecord(personalRecord) .. " s") or "None"
+		personalRecord = personalRecord > 0 and FormatRecord(personalRecord) or "None"
 
 		if v:IsBot() then
 			local worldRecord = ReadFromCache(worldRecordsCache, 0, style, "time")
-			worldRecord = worldRecord > 0 and (FormatRecord(worldRecord) .. " s") or "None"
+			worldRecord = worldRecord > 0 and FormatRecord(worldRecord) or "None"
 			personalRecord = worldRecord
 		end
 
-		local time = timerStart > 0 and (FormatTime(CurTime() - timerStart)  .. " s") or "Stopped"
+		local time = timerStart > 0 and FormatTime(CurTime() - timerStart) or "Stopped"
 
 		AddScoreboardRow(3 + k, 5, v:Name(), style, time, personalRecord, v:Ping())
 	end

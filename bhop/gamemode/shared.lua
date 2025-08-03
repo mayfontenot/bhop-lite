@@ -51,6 +51,18 @@ function FormatTime(ns)
 	end
 end
 
+function GetSpectators(ply)
+	local spectators = {}
+
+	for _, v in pairs(team.GetPlayers(TEAM_SPECTATOR)) do
+		if v:GetObserverTarget() == ply then
+			table.insert(spectators, v)
+		end
+	end
+
+	return spectators
+end
+
 function GM:CreateTeams()
 	team.SetUp(TEAM_SPECTATOR, "Spectator", Color(125, 125, 125))
 	team.SetUp(TEAM_PLAYER, "Normal", Color(200, 200, 200))

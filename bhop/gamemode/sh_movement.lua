@@ -1,20 +1,10 @@
-local function GetSpectators(ply)
-	local spectators = {}
-
-	for _, v in pairs(team.GetPlayers(TEAM_SPECTATOR)) do
-		if v:GetObserverTarget() == ply then
-			table.insert(spectators, v)
-		end
-	end
-
-	return spectators
-end
-
 function GM:SetupMove(ply, mv, cmd)
 	local steamID = ply:SteamID()
 
-	if SERVER and ply:IsBot() then
+	if SERVER and ply:IsBot() then						--bot replay
 		ply:SetMoveType(MOVETYPE_NONE)
+		ply:SetRenderMode(RENDERMODE_NONE)
+		ply:SetFOV(100)
 
 		local mvTable = ReadFromCache(wrReplayCache, nil, ReadFromCache(tempPlayerCache, STYLE_AUTO, steamID, "style"))
 
@@ -30,8 +20,6 @@ function GM:SetupMove(ply, mv, cmd)
 
 			mv:SetOrigin(Vector(mvTable[ply.replayMV]["posX"], mvTable[ply.replayMV]["posY"], mvTable[ply.replayMV]["posZ"]))
 			ply:SetEyeAngles(Angle(mvTable[ply.replayMV]["angP"], mvTable[ply.replayMV]["angY"], 0))
-			ply:SetFOV(100)
-			ply:SetRenderMode(RENDERMODE_NONE)
 
 			if #GetSpectators(ply) > 0 then
 				ply.replayMV = ply.replayMV + 1

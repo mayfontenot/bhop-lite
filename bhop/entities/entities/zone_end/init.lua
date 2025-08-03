@@ -35,19 +35,19 @@ function ENT:StartTouch(ent)
 					UpdatePersonalRecordsCache()
 					UpdateWorldRecordsCache()
 
-					local diff = worldRecord > 0 and " (-" .. FormatRecord(worldRecord - time) .. " s)" or ""
+					local diff = worldRecord > 0 and " (-" .. FormatRecord(worldRecord - time) .. ")" or ""
 
-					PrintMessage(HUD_PRINTTALK, "[" .. ALT_NAME .. "] " .. name .. " set a new " .. style .. " World Record of " .. FormatRecord(time) .. " s" .. diff)
+					PrintMessage(HUD_PRINTTALK, "[" .. ALT_NAME .. "] " .. name .. " set a new " .. style .. " World Record of " .. FormatRecord(time) .. diff)
 				elseif time < personalRecord or personalRecord == 0 then
 					WriteToCache(personalRecordsCache, name, steamID, "name")
 					WriteToCache(personalRecordsCache, time, steamID, style)
 					UpdatePersonalRecordsCache()
 
-					local diff = personalRecord > 0 and " (-" .. FormatRecord(personalRecord - time) .. " s)" or ""
+					local diff = personalRecord > 0 and " (-" .. FormatRecord(personalRecord - time) .. ")" or ""
 
-					PrintMessage(HUD_PRINTTALK, "[" .. ALT_NAME .. "] " .. name .. " finished " .. style .. " in " .. FormatRecord(time) .. " s" .. diff)
+					PrintMessage(HUD_PRINTTALK, "[" .. ALT_NAME .. "] " .. name .. " finished " .. style .. " in " .. FormatRecord(time) .. diff)
 				else
-					ent:SendLua('chat.AddText(Color(151, 211, 255), "[" .. ALT_NAME .. "] You did not beat your Personal Record (+" .. FormatRecord(' .. time - personalRecord .. ') .. " s)")')
+					ent:SendLua('chat.AddText(Color(151, 211, 255), "[" .. ALT_NAME .. "] You did not beat your Personal Record (+" .. FormatRecord(' .. time - personalRecord .. ') .. ")")')
 				end
 
 				WriteToCache(tempPlayerCache, 0, ent:SteamID(), "timerStart")
