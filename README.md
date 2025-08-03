@@ -1,8 +1,8 @@
 # bhop-lite
 An optimized and lightweight Bunny Hop gamemode for Garry's Mod<br/>
 Features a memory caching system and optimized code to reduce network traffic and stutters<br/>
-Credit to FiBzY for the crouch boost fix and RNG fix<br/>
-WORK IN PROGRESS, many features yet to be implemented<br/>
+Made by Mei and FiBzY<br/>
+WORK IN PROGRESS, changelevel and ranks system yet to be implemented<br/>
 
 Directions:
 1. place bhop folder in garrysmod/gamemodes directory
