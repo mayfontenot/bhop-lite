@@ -108,6 +108,7 @@ function GM:HUDDrawScoreBoard()
 	AddScoreboardRow(3, 5, "Name", "Style", "Timer", "Personal Record", "Ping")
 
 	local players = player.GetHumans()
+	local spectators = ""
 
 	for k, v in ipairs(players) do
 		local steamID = v:SteamID()
@@ -122,8 +123,12 @@ function GM:HUDDrawScoreBoard()
 		if v:Team() ~= TEAM_SPECTATOR then
 			AddScoreboardRow(3 + k, 5, v:Name(), style, time, personalRecord, v:Ping())
 		else
-			AddScoreboardRow(19, 1, (k == 1 and "Spectators: " or "") .. v:Name() .. (k < #players and ", " or ""))
+			spectators = spectators .. (k == 1 and "" or ", ") .. v:Name()
 		end
+	end
+
+	if #team.GetPlayers(TEAM_SPECTATOR) > 0 then
+		AddScoreboardRow(19, 1, "Spectators: " .. spectators)
 	end
 end
 
