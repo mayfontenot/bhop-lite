@@ -7,7 +7,7 @@ local hide = {
 	["CHudSuitPower"] = true
 }
 local SCR_W, SCR_H = ScrW(), ScrH()
-local hudWidth, hudHeight, HUD_TEXT_NUM = 0, 0, 5
+local hudWidth, hudHeight, hudTexts = 0, 0, {}
 
 local function AddHudRow(text, rowNum)
 	local textWidth, textHeight = surface.GetTextSize(text)
@@ -37,24 +37,29 @@ function GM:HUDPaint()
 	worldRecord = worldRecord > 0 and ("WR: " .. FormatRecord(worldRecord) .. " (" .. ReadFromCache(worldRecordsCache, "N/A", style, "name") .. ")") or "WR: None"
 	personalRecord = personalRecord > 0 and ("PR: " .. FormatRecord(personalRecord)) or "PR: None"
 
-	local textWidth, textHeight = surface.GetTextSize(worldRecord)
+	hudTexts = {}
 
+	if IsValid(observerTarget) then
+		table.insert(hudTexts, observerTarget:Name())
+	end
+
+	table.insert(hudTexts, style)
+	table.insert(hudTexts, time)
+	table.insert(hudTexts, math.Round(ply:GetVelocity():Length2D()) .. " u/s")
+	table.insert(hudTexts, personalRecord)
+	table.insert(hudTexts, worldRecord)
+
+	local textWidth, textHeight = surface.GetTextSize(worldRecord)
 	hudWidth = textWidth + textHeight * 2
-	hudHeight = textHeight * (HUD_TEXT_NUM + 2)
+	hudHeight = textHeight * (#hudTexts + 2)
 
 	draw.RoundedBox(16, SCR_W / 2 - hudWidth / 2, SCR_H - textHeight - hudHeight, hudWidth, hudHeight, Color(0, 0, 0, 100))
 
 	surface.SetTextColor(255, 255, 255)
 
-	if IsValid(observerTarget) then
-		AddHudRow(observerTarget:Name(), 0)
+	for k, v in ipairs(hudTexts) do
+		AddHudRow(v, k)
 	end
-
-	AddHudRow(style, 1)
-	AddHudRow(time, 2)
-	AddHudRow(math.Round(ply:GetVelocity():Length2D()) .. " u/s", 3)
-	AddHudRow(personalRecord, 4)
-	AddHudRow(worldRecord, 5)
 
 	local spectators = GetSpectators(ply)
 
