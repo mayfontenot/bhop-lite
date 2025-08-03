@@ -11,6 +11,7 @@ Directions:
 5. /start pos1, /start pos2, /end pos1, /end pos2 to setup zones
 6. /tier \<tier\> to set map tier
 7. /map \<map\> to save data and change level, currently no map vote system, will be implemented soon
+8. Press F1 to open the BHop Lite menu
 
 command prefix: "!" or "/"<br/>
 commands:<br/>
