@@ -154,19 +154,47 @@ concommand.Add("bhoplite_menu", function(ply, cmd, args)
 	commandsPanel:AddLine("end pos2", "Create or modify end pos2 to your eye position. Admin only.")
 	UpdatePanel(commandsPanel)
 
-	local recordsPanel = AddPanel("Records", "DListView", frame)
-	recordsPanel:AddColumn("SteamID")
-	recordsPanel:AddColumn("Name")
-	recordsPanel:AddColumn("Style")
-	recordsPanel:AddColumn("Time")
+	local personalRecordsPanel = AddPanel("PR", "DListView", frame)
+	personalRecordsPanel:AddColumn("SteamID")
+	personalRecordsPanel:AddColumn("Name")
+	personalRecordsPanel:AddColumn("Style")
+	personalRecordsPanel:AddColumn("Time")
 	for steamID, v in pairs(personalRecordsCache) do
 		for style, time in pairs(v) do
 			if style ~= "name" then
-				recordsPanel:AddLine(steamID, v["name"], style, FormatRecord(time) .. " s")
+				personalRecordsPanel:AddLine(steamID, v["name"], style, FormatRecord(time) .. " s")
 			end
 		end
 	end
-	UpdatePanel(recordsPanel)
+	UpdatePanel(personalRecordsPanel)
+
+	local worldRecordsIndex = 1
+	local worldRecordsPanel = AddPanel("WR", "DScrollPanel", frame)
+	for style, v in pairs(worldRecordsCache) do
+		local label = vgui.Create("DLabel", worldRecordsPanel)
+		label:SetWide(MENU_HEIGHT - 48)
+		label:SetPos(8, 8 + 40 * (worldRecordsIndex - 1))
+		label:SetTextColor(Color(255, 255, 255))
+		label:SetText(v["steamID"] .. " " .. v["name"] .. " " .. style .. " " .. FormatRecord(v["time"]) .. " s")
+
+		local buttonReplay = vgui.Create("DButton", worldRecordsPanel)
+		buttonReplay:SetSize(64, 32)
+		buttonReplay:SetPos(worldRecordsPanel:GetWide() - 144, 8 + 40 * (worldRecordsIndex - 1))
+		buttonReplay:SetTextColor(Color(255, 255, 255))
+		buttonReplay:SetText("Replay")
+		buttonReplay.DoClick = function()
+			net.Start("replayStyle")
+			net.WriteString(style)
+			net.SendToServer()
+		end
+
+		function buttonReplay:Paint(w, h)
+			surface.SetDrawColor(255, 255, 255)
+			surface.DrawOutlinedRect(0, 0, w, h)
+		end
+
+		worldRecordsIndex = worldRecordsIndex + 1
+	end
 
 	local mapsPanel = AddPanel("Maps", "DListView", frame)
 	mapsPanel:AddColumn("Name")

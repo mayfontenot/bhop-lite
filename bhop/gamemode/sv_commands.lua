@@ -1,3 +1,5 @@
+util.AddNetworkString("replayStyle")
+
 local function ChangeStyle(ply, newStyle)
 	local steamID = ply:SteamID()
 
@@ -28,6 +30,12 @@ local function UpdateZone(pos2, zone)
 	ent.size = size
 	ent:Spawn()
 end
+
+net.Receive("replayStyle", function(len, ply)
+	local bot = player.GetBots()[1]
+	bot.replayMV = 1
+	ChangeStyle(bot, net.ReadString())
+end)
 
 function GM:PlayerSay(sender, text, teamChat)
 	if text[1] == "!" or text[1] == "/" then
@@ -68,10 +76,6 @@ function GM:PlayerSay(sender, text, teamChat)
 				sender:StripWeapons()
 				sender:Spectate(OBS_MODE_IN_EYE)
 			end
-		elseif string.StartsWith(text, "replay ") then
-			--[[local style = string.sub(text, 8)
-
-			player.GetBots()[1]]]
 		elseif string.StartsWith(text, "tier ") then
 			if ReadFromCache(playerCache, ROLE_USER, sender:SteamID(), "role") == ROLE_ADMIN then
 				local tier = string.sub(text, 6)
