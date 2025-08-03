@@ -107,8 +107,9 @@ function GM:HUDDrawScoreBoard()
 	AddScoreboardRow(2, 1, "Tier " .. ReadFromCache(mapCache, 1, "tier") .. " " .. game.GetMap())
 	AddScoreboardRow(3, 5, "Name", "Style", "Timer", "Personal Record", "Ping")
 
-	for k, v in ipairs(player.GetAll()) do
-		local teamColor = v:Team() == TEAM_SPECTATOR and team.GetColor(v:Team()) or Color(255, 255, 255)
+	local players = player.GetHumans()
+
+	for k, v in ipairs(players) do
 		local steamID = v:SteamID()
 		local style = ReadFromCache(tempPlayerCache, STYLE_AUTO, steamID, "style")
 		local timerStart = ReadFromCache(tempPlayerCache, 0, steamID, "timerStart")
@@ -116,15 +117,13 @@ function GM:HUDDrawScoreBoard()
 		local personalRecord = ReadFromCache(personalRecordsCache, 0, steamID, style)
 		personalRecord = personalRecord > 0 and FormatRecord(personalRecord) or "None"
 
-		if v:IsBot() then
-			local worldRecord = ReadFromCache(worldRecordsCache, 0, style, "time")
-			worldRecord = worldRecord > 0 and FormatRecord(worldRecord) or "None"
-			personalRecord = worldRecord
-		end
-
 		local time = timerStart > 0 and FormatTime(CurTime() - timerStart) or "Stopped"
 
-		AddScoreboardRow(3 + k, 5, v:Name(), style, time, personalRecord, v:Ping())
+		if v:Team() ~= TEAM_SPECTATOR then
+			AddScoreboardRow(3 + k, 5, v:Name(), style, time, personalRecord, v:Ping())
+		else
+			AddScoreboardRow(19, 1, (k == 1 and "Spectators: " or "") .. v:Name() .. (k < #players and ", " or ""))
+		end
 	end
 end
 
