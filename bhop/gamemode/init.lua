@@ -32,14 +32,6 @@ function GM:Initialize()
 	ReadFromJSON()
 end
 
-function GM:OnEntityCreated(ent)			--fix for maps potentially containing backdoors
-	if ent:GetClass() == "lua_run" then
-		ent:Remove()
-
-		print("!CAUTIONi Map contains a potential back door iCAUTION!")
-	end
-end
-
 local spawns = {}
 
 function GM:InitPostEntity()
@@ -153,4 +145,5 @@ end
 
 function GM:AllowPlayerPickup(ply, ent)
 	return false
+
 end
