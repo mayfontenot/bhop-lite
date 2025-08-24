@@ -32,10 +32,18 @@ function GM:Initialize()
 	ReadFromJSON()
 end
 
+function GM:OnEntityCreated(ent)			--fix for maps potentially containing backdoors
+	if ent:GetClass() == "lua_run" then
+		ent:Remove()
+
+		print("!CAUTIONi Map contains a potential back door iCAUTION!")
+	end
+end
+
 local spawns = {}
 
 function GM:InitPostEntity()
-	for _, v in pairs(ents.FindByClass("func_button")) do
+	for _, v in pairs(ents.FindByClass("func_button")) do 		--blocks fix
 		v:Fire("Lock")
 		v:SetKeyValue("locked_sound", 0)
 	end
@@ -95,7 +103,7 @@ function GM:PlayerSpawn(ply, transition)
 	ply:StripWeapons()
 end
 
-function GM:EntityFireBullets(ent, data)
+function GM:EntityFireBullets(ent, data)				--refill the magazine when player shoots
 	local activeWeapon = ent:GetActiveWeapon()
 
 	activeWeapon:SetClip1(activeWeapon:GetMaxClip1())
@@ -103,23 +111,19 @@ function GM:EntityFireBullets(ent, data)
 	return true
 end
 
-function GM:PlayerNoClip(ply)
+function GM:PlayerNoClip(ply)										--disable timer if player noclips
 	WriteToCache(tempPlayerCache, 0, ply:SteamID(), "timerStart")
 	UpdateTempPlayerCache()
 
 	return true
 end
 
+function GM:ShowHelp(ply)
+	ply:ConCommand("bhoplite_menu")
+end
+
 function GM:PlayerUse(ply)
 	return ply:Team() ~= TEAM_SPECTATOR
-end
-
-function GM:GetFallDamage(ply, speed)
-	return false
-end
-
-function GM:PlayerShouldTakeDamage(ply, attacker)
-	return false
 end
 
 function GM:IsSpawnpointSuitable(ply, spawnPoint, makeSuitable)
@@ -128,6 +132,15 @@ end
 
 function GM:PlayerCanHearPlayersVoice(listener, talker)
 	return true
+end
+
+--disable unwanted features
+function GM:GetFallDamage(ply, speed)
+	return false
+end
+
+function GM:PlayerShouldTakeDamage(ply, attacker)
+	return false
 end
 
 function GM:CanPlayerSuicide(ply)
@@ -140,8 +153,4 @@ end
 
 function GM:AllowPlayerPickup(ply, ent)
 	return false
-end
-
-function GM:ShowHelp(ply)
-	ply:ConCommand("bhoplite_menu")
 end

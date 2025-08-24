@@ -1,7 +1,7 @@
 GM.Name = "Bunny Hop"
 GM.Author = "Mei"
 GM.Website = "meiware.net"
-GM.TeamBased = false
+GM.TeamBased = false	--this is important, disables unwanted base gamemode features like the team menu and default spectator
 
 DeriveGamemode("base")
 
@@ -21,9 +21,9 @@ models = {
 	"models/player/phoenix.mdl"
 }
 
-math.randomseed(os.time())
+math.randomseed(os.time())	--we don't want random to be predicted
 
-function FormatRecord(ns)
+function FormatRecord(ns)			--high precision format for static time (chat notifications and menus)
 	if type(ns) == 'boolean' then
 		ns = 0
 	end
@@ -37,7 +37,7 @@ function FormatRecord(ns)
 	end
 end
 
-function FormatTime(ns)
+function FormatTime(ns)				--short format for time elapsed, displaying precise time here isn't necessary, it updates faster than one can view
     if type(ns) == 'boolean' then
     	ns = 0
     end
@@ -51,7 +51,7 @@ function FormatTime(ns)
 	end
 end
 
-function GetSpectators(ply)
+function GetSpectators(ply)				--method for obtaining all spectators of the given player
 	local spectators = {}
 
 	for _, v in pairs(team.GetPlayers(TEAM_SPECTATOR)) do

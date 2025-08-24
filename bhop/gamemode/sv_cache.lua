@@ -32,7 +32,7 @@ function ReadFromJSON()
 	endZone:Spawn()
 end
 
-function WriteToCache(cache, value, ...) -- ... represents an infinite number of indices, you can index the cache for as many indices as the cache table allows
+function WriteToCache(cache, value, ...) -- ... represents an infinite number of nested indices, you can index the cache for as many nested indices as the cache table has
 	local indices = {...}
 	local tempCache = cache
 

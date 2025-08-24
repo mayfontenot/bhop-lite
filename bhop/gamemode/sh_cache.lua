@@ -1,3 +1,4 @@
+--cache commonly used methods, these are not precached by the lua engine
 util = util
 util.PrecacheModel = util.PrecacheModel
 util.AddNetworkString = util.AddNetworkString
@@ -53,6 +54,7 @@ MOVETYPE_WALK = MOVETYPE_WALK
 IN_ATTACK = IN_ATTACK
 IN_ATTACK2 = IN_ATTACK2
 IN_JUMP = IN_JUMP
+
 tempPlayerCache = {} --stores timerStart and styles
 playerCache = {} --stores player roles and points
 personalRecordsCache = {} --stores personal records
@@ -62,7 +64,7 @@ mapsCache = {} --stores the names of all maps
 replayCache = {} --stores movedata of players
 wrReplayCache = {} --stores movedata of WR bot
 
-function ReadFromCache(cache, fallback, ...) -- ... represents an infinite number of indices, you can index the cache for as many indices as the cache table allows
+function ReadFromCache(cache, fallback, ...) -- ... represents an infinite number of nested indices, you can index the cache for as many nested indices as the cache table has
 	for _, v in ipairs({...}) do
 		if cache[v] then
 			cache = cache[v]
@@ -74,6 +76,6 @@ function ReadFromCache(cache, fallback, ...) -- ... represents an infinite numbe
 	return cache
 end
 
-for _, v in pairs(models) do
+for _, v in pairs(models) do 	--cache playermodels
 	util.PrecacheModel(v)
 end

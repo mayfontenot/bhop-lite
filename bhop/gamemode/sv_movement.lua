@@ -1,4 +1,4 @@
-function GM:KeyPress(ply, key)
+function GM:KeyPress(ply, key)												--spectator target switch
 	if ply:Team() == TEAM_SPECTATOR then
 		if key == IN_ATTACK then
 			local players = team.GetPlayers(TEAM_PLAYER)

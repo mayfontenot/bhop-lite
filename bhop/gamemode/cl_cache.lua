@@ -1,3 +1,4 @@
+--cache commonly used methods, these are not precached by the lua engine
 surface = surface
 surface.GetTextSize = surface.GetTextSize
 surface.SetTextPos = surface.SetTextPos
