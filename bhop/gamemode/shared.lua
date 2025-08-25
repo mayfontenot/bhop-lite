@@ -37,7 +37,7 @@ function FormatRecord(ns)			--high precision format for static time (chat notifi
 	end
 end
 
-function FormatTime(ns)				--short format for time elapsed, displaying precise time here isn't necessary, it updates faster than one can view
+function FormatTime(ns)				--short format for dynamic time elapsed, displaying precise time here isn't necessary, it updates faster than one can view
     if type(ns) == 'boolean' then
     	ns = 0
     end

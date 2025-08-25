@@ -107,10 +107,7 @@ function GM:HUDDrawScoreBoard()
 	AddScoreboardRow(2, 1, "Tier " .. ReadFromCache(mapCache, 1, "tier") .. " " .. game.GetMap())
 	AddScoreboardRow(3, 5, "Name", "Style", "Timer", "Personal Record", "Ping")
 
-	local players = player.GetHumans()
-	local spectators = ""
-
-	for k, v in ipairs(players) do
+	for k, v in ipairs(team.GetPlayers(TEAM_PLAYER)) do
 		local steamID = v:SteamID()
 		local style = ReadFromCache(tempPlayerCache, STYLE_AUTO, steamID, "style")
 		local timerStart = ReadFromCache(tempPlayerCache, 0, steamID, "timerStart")
@@ -120,11 +117,13 @@ function GM:HUDDrawScoreBoard()
 
 		local time = timerStart > 0 and FormatTime(CurTime() - timerStart) or "Stopped"
 
-		if v:Team() ~= TEAM_SPECTATOR then
-			AddScoreboardRow(3 + k, 5, v:Name(), style, time, personalRecord, v:Ping())
-		else
-			spectators = spectators .. (k == 1 and "" or ", ") .. v:Name()
-		end
+		AddScoreboardRow(3 + k, 5, v:Name(), style, time, personalRecord, v:Ping())
+	end
+
+	local spectators = ""
+
+	for k, v in ipairs(team.GetPlayers(TEAM_SPECTATOR)) do
+		spectators = spectators .. (spectators ~= "" and ", " or "") .. v:Name()
 	end
 
 	if #team.GetPlayers(TEAM_SPECTATOR) > 0 then

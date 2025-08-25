@@ -1,7 +1,22 @@
 function GM:SetupMove(ply, mv, cmd)
 	local steamID = ply:SteamID()
 
-	if SERVER and ply:IsBot() then						--bot replay
+	if SERVER and not ply:IsBot() then			--record replays
+		local steamID = ply:SteamID()
+
+		if ReadFromCache(tempPlayerCache, 0, steamID, "timerStart") > 0 then
+			ply.replayMV = ply.replayMV and ply.replayMV + 1 or 1
+
+			local pos, ang = mv:GetOrigin(), ply:EyeAngles()
+
+			WriteToCache(replayCache, {["posX"] = pos.x, ["posY"] = pos.y, ["posZ"] = pos.z, ["angP"] = ang.p, ["angY"] = ang.y}, steamID, ply.replayMV)
+		else
+			WriteToCache(replayCache, {}, steamID)
+			ply.replayMV = 0
+		end
+	end
+
+	if SERVER and ply:IsBot() then						--play replay
 		ply:SetMoveType(MOVETYPE_NONE)
 		ply:SetRenderMode(RENDERMODE_NONE)
 		ply:SetFOV(100)
@@ -83,7 +98,7 @@ function GM:Move(ply, mv)
 	local fSpeed, sSpeed = mv:GetForwardSpeed(), mv:GetSideSpeed()
 	local maxSpeed = mv:GetMaxSpeed()
 
-	if style == STYLE_NORMAL then
+	if style == STYLE_AUTO then
 		if mv:KeyDown(IN_MOVELEFT) then
 			sSpeed = sSpeed - AIR_ACCEL
 		elseif mv:KeyDown(IN_MOVERIGHT) then
