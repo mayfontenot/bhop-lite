@@ -104,7 +104,7 @@ function GM:EntityFireBullets(ent, data)				--refill the magazine when player sh
 end
 
 function GM:PlayerNoClip(ply)										--disable timer if player noclips
-	WriteToCache(tempPlayerCache, 0, ply:SteamID(), "timerStart")
+	WriteToCache(tempPlayerCache, -1, ply:SteamID(), "timerStart")
 	UpdateTempPlayerCache()
 
 	return true
@@ -147,3 +147,4 @@ function GM:AllowPlayerPickup(ply, ent)
 	return false
 
 end
+
