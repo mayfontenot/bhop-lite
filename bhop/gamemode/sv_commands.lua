@@ -46,6 +46,8 @@ function GM:PlayerSay(sender, text, teamChat)
 		sender:SendLua('chat.AddText(Color(151, 211, 255), "[" .. ALT_NAME .. "] Press F1 for a list of commands.")')
 	elseif text == "restart" or text == "r" then
 		sender:Spawn()
+		WriteToCache(tempPlayerCache, 0, sender:SteamID(), "timerStart")
+		UpdateTempPlayerCache()
 	elseif text == "usp" then
 		sender:Give("weapon_usp")
 	elseif text == "glock" then
