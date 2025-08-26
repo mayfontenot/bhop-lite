@@ -1,50 +1,52 @@
 function GM:SetupMove(ply, mv, cmd)
 	local steamID = ply:SteamID()
 
-	if SERVER and not ply:IsBot() then			--record replays
-		local steamID = ply:SteamID()
+	if SERVER then
+		if not ply:IsBot() then			--record replays
+			local steamID = ply:SteamID()
 
-		if ReadFromCache(tempPlayerCache, 0, steamID, "timerStart") > 0 then
-			ply.replayMV = ply.replayMV and ply.replayMV + 1 or 1
+			if ReadFromCache(tempPlayerCache, 0, steamID, "timerStart") > 0 then
+				ply.replayMV = ply.replayMV and ply.replayMV + 1 or 1
 
-			local pos, ang = mv:GetOrigin(), ply:EyeAngles()
+				local pos, ang = mv:GetOrigin(), ply:EyeAngles()
 
-			WriteToCache(replayCache, {["posX"] = pos.x, ["posY"] = pos.y, ["posZ"] = pos.z, ["angP"] = ang.p, ["angY"] = ang.y}, steamID, ply.replayMV)
-		else
-			WriteToCache(replayCache, {}, steamID)
-			ply.replayMV = 0
+				WriteToCache(replayCache, {["posX"] = pos.x, ["posY"] = pos.y, ["posZ"] = pos.z, ["angP"] = ang.p, ["angY"] = ang.y}, steamID, ply.replayMV)
+			else
+				WriteToCache(replayCache, {}, steamID)
+				ply.replayMV = 0
+			end
 		end
-	end
 
-	if SERVER and ply:IsBot() then						--play replay
-		ply:SetMoveType(MOVETYPE_NONE)
-		ply:SetRenderMode(RENDERMODE_NONE)
-		ply:SetFOV(100)
+		if ply:IsBot() then						--play replay
+			ply:SetMoveType(MOVETYPE_NONE)
+			ply:SetRenderMode(RENDERMODE_NONE)
+			ply:SetFOV(100)
 
-		local mvTable = ReadFromCache(wrReplayCache, nil, ReadFromCache(tempPlayerCache, STYLE_AUTO, steamID, "style"))
+			local mvTable = ReadFromCache(wrReplayCache, nil, ReadFromCache(tempPlayerCache, STYLE_AUTO, steamID, "style"))
 
-		if mvTable then
-			if not ply.replayMV then
-				ply.replayMV = 1
-			end
+			if mvTable then
+				if not ply.replayMV then
+					ply.replayMV = 1
+				end
 
-			if #GetSpectators(ply) > 0 and ply.replayMV == 1 then
-				WriteToCache(tempPlayerCache, CurTime(), steamID, "timerStart")
-				UpdateTempPlayerCache()
-			end
+				if #GetSpectators(ply) > 0 and ply.replayMV == 1 then
+					WriteToCache(tempPlayerCache, CurTime(), steamID, "timerStart")
+					UpdateTempPlayerCache()
+				end
 
-			mv:SetOrigin(Vector(mvTable[ply.replayMV]["posX"], mvTable[ply.replayMV]["posY"], mvTable[ply.replayMV]["posZ"]))
-			ply:SetEyeAngles(Angle(mvTable[ply.replayMV]["angP"], mvTable[ply.replayMV]["angY"], 0))
+				mv:SetOrigin(Vector(mvTable[ply.replayMV]["posX"], mvTable[ply.replayMV]["posY"], mvTable[ply.replayMV]["posZ"]))
+				ply:SetEyeAngles(Angle(mvTable[ply.replayMV]["angP"], mvTable[ply.replayMV]["angY"], 0))
 
-			if #GetSpectators(ply) > 0 then
-				ply.replayMV = ply.replayMV + 1
-			end
+				if #GetSpectators(ply) > 0 then
+					ply.replayMV = ply.replayMV + 1
+				end
 
-			if ply.replayMV > #mvTable or #GetSpectators(ply) == 0 then
-				WriteToCache(tempPlayerCache, 0, steamID, "timerStart")
-				UpdateTempPlayerCache()
+				if ply.replayMV > #mvTable or #GetSpectators(ply) == 0 then
+					WriteToCache(tempPlayerCache, 0, steamID, "timerStart")
+					UpdateTempPlayerCache()
 
-				ply.replayMV = 1
+					ply.replayMV = 1
+				end
 			end
 		end
 	end
@@ -53,17 +55,18 @@ function GM:SetupMove(ply, mv, cmd)
 
 	local onGround = ply:OnGround()
 
-	if ReadFromCache(tempPlayerCache, STYLE_AUTO, steamID, "style") ~= STYLE_MANUAL and onGround and cmd:KeyDown(IN_JUMP) and ply:WaterLevel() < 2 then	--autohop
+	--autohop by FiBzY to be crouch boost fix compatible
+	if ReadFromCache(tempPlayerCache, STYLE_AUTO, steamID, "style") ~= STYLE_MANUAL and cmd:KeyDown(IN_JUMP) and onGround and ply:WaterLevel() < 2 then
 		mv:SetOldButtons(mv:GetButtons() - IN_JUMP)
 	end
 
-	if onGround and ply:Crouching() and cmd:KeyDown(IN_JUMP) then	--crouch boost fix, credit to FiBzY
-        ply:SetDuckSpeed(0)
-        ply:SetUnDuckSpeed(0)
-    else
-        ply:SetDuckSpeed(0.4)
-        ply:SetUnDuckSpeed(0.2)
-    end
+	if cmd:KeyDown(IN_JUMP) and onGround and ply:Crouching() then	--FiBzY's crouch boost fix
+		ply:SetDuckSpeed(0)
+		ply:SetUnDuckSpeed(0)
+	else
+		ply:SetDuckSpeed(0.4)
+		ply:SetUnDuckSpeed(0.2)
+	end
 
 	if onGround then return end
 
