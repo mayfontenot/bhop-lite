@@ -85,7 +85,7 @@ concommand.Add("bhoplite_menu", function(ply, cmd, args)
 
 	menuDrawn = true
 
-	local frame = vgui.Create("DFrame")
+	--[[local frame = vgui.Create("DFrame")
 	frame:SetSize(MENU_WIDTH, MENU_HEIGHT)
 	frame:Center()
 	frame:SetTitle(ALT_NAME .. " menu")
@@ -211,7 +211,7 @@ concommand.Add("bhoplite_menu", function(ply, cmd, args)
 		label:SetWide(MENU_HEIGHT - 48)
 		label:SetPos(8, 8 + 40 * (k - 1))
 		label:SetTextColor(Color(255, 255, 255))
-		label:SetText(v:SteamID() .. " " .. v:Name())
+		label:SetText(v:SteamID64() .. " " .. v:Name())
 
 		local buttonProfile = vgui.Create("DButton", playersPanel)
 		buttonProfile:SetSize(64, 32)
@@ -241,5 +241,5 @@ concommand.Add("bhoplite_menu", function(ply, cmd, args)
 			surface.SetDrawColor(255, 255, 255)
 			surface.DrawOutlinedRect(0, 0, w, h)
 		end
-	end
+	end]]
 end)

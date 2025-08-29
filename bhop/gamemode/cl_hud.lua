@@ -23,18 +23,18 @@ function GM:HUDPaint()
 	local observerTarget = ply:GetObserverTarget()
 	ply = IsValid(observerTarget) and observerTarget or ply
 
-	local steamID = ply:SteamID()
-	local style = ReadFromCache(tempPlayerCache, STYLE_AUTO, steamID, "style")
-	local timerStart = ReadFromCache(tempPlayerCache, 0, steamID, "timerStart")
-	local worldRecord = ReadFromCache(worldRecordsCache, 0, style, "time")
-	local personalRecord = ReadFromCache(personalRecordsCache, 0, steamID, style)
+	local steamID = ply:SteamID64()
+	local style = ReadFromCache(tempCache, STYLE_AUTO, steamID, "style")
+	local timerStart = ReadFromCache(tempCache, 0, steamID, "timer_start")
+	local worldRecord = ReadFromCache(recordsCache, 0, style, 1, "time")
+	local personalRecord = ReadFromCache(recordsCache, 0, style, steamID, "time")
 	local time = timerStart > 0 and (FormatTime(CurTime() - timerStart)) or "Stopped"
 
 	if ply:IsBot() then
 		personalRecord = worldRecord
 	end
 
-	worldRecord = worldRecord > 0 and ("WR: " .. FormatRecord(worldRecord) .. " (" .. ReadFromCache(worldRecordsCache, "N/A", style, "name") .. ")") or "WR: None"
+	worldRecord = worldRecord > 0 and ("WR: " .. FormatRecord(worldRecord) .. " (" .. ReadFromCache(recordsCache, "N/A", style, 1, "name") .. ")") or "WR: None"
 	personalRecord = personalRecord > 0 and ("PR: " .. FormatRecord(personalRecord)) or "PR: None"
 
 	hudTexts = {}
@@ -108,11 +108,11 @@ function GM:HUDDrawScoreBoard()
 	AddScoreboardRow(3, 5, "Name", "Style", "Timer", "Personal Record", "Ping")
 
 	for k, v in ipairs(team.GetPlayers(TEAM_PLAYER)) do
-		local steamID = v:SteamID()
-		local style = ReadFromCache(tempPlayerCache, STYLE_AUTO, steamID, "style")
-		local timerStart = ReadFromCache(tempPlayerCache, 0, steamID, "timerStart")
+		local steamID = v:SteamID64()
+		local style = ReadFromCache(tempCache, STYLE_AUTO, steamID, "style")
+		local timerStart = ReadFromCache(tempCache, 0, steamID, "timer_start")
 
-		local personalRecord = ReadFromCache(personalRecordsCache, 0, steamID, style)
+		local personalRecord = ReadFromCache(recordsCache, 0, style, steamID, "time")
 		personalRecord = personalRecord > 0 and FormatRecord(personalRecord) or "None"
 
 		local time = timerStart > 0 and FormatTime(CurTime() - timerStart) or "Stopped"

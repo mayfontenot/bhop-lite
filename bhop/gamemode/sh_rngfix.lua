@@ -1,4 +1,4 @@
-﻿--RNG fix, credit to FiBzY
+﻿--RNG fix by FiBzY
 --commented by fibzy for mei
 
 --cache all used tables
@@ -151,7 +151,7 @@ end
 local AIR_ACCEL = 500
 
 function PredictVelocity(ply, mv, cmd)
-	local style = ReadFromCache(tempPlayerCache, STYLE_AUTO, ply:SteamID(), "style")
+	local style = ReadFromCache(tempCache, STYLE_AUTO, ply:SteamID64(), "style")
 	local vel, ang = mv:GetVelocity(), mv:GetMoveAngles()
 	local forward, right = ang:Forward(), ang:Right()
 	local fSpeed, sSpeed = mv:GetForwardSpeed(), mv:GetSideSpeed()

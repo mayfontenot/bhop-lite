@@ -16,32 +16,29 @@ end
 
 function ENT:StartTouch(ent)
 	if IsValid(ent) and ent:IsPlayer() then
-		if not ent:IsBot() then
-			local steamID = ent:SteamID()
-			local timerStart = ReadFromCache(tempPlayerCache, 0, steamID, "timerStart")
+		if not ent:IsBot() and ent:Team() ~= TEAM_SPECTATOR then
+			local steamID = ent:SteamID64()
+			local timerStart = ReadFromCache(tempCache, 0, steamID, "timer_start")
 
 			if timerStart > 0 then
 				local time = CurTime() - timerStart
 				local name = ent:Name()
-				local style = ReadFromCache(tempPlayerCache, STYLE_AUTO, steamID, "style")
-				local worldRecord = ReadFromCache(worldRecordsCache, 0, style, "time")
-				local personalRecord = ReadFromCache(personalRecordsCache, 0, steamID, style)
+				local style = ReadFromCache(tempCache, STYLE_AUTO, steamID, "style")
+				local personalRecord = ReadFromCache(recordsCache, 0, style, steamID, "time")
+				local worldRecord = ReadFromCache(recordsCache, 0, style, 1, "time")
 
 				if time < worldRecord or worldRecord == 0 then
-					WriteToCache(worldRecordsCache, {["steamID"] = steamID, ["name"] = name, ["time"] = time}, style)
-					WriteToCache(personalRecordsCache, name, steamID, "name")
-					WriteToCache(personalRecordsCache, time, steamID, style)
-					WriteToCache(wrReplayCache, ReadFromCache(replayCache, {}, steamID), style)
-					UpdatePersonalRecordsCache()
-					UpdateWorldRecordsCache()
+					WriteToCache(recordsCache, {name = name, time = time}, style, steamID)
+					WriteToCache(recordsCache, {steam_id = steamID, name = name, time = time}, style, 1)
+					WriteToCache(replayCache, ent.replayCache, style)
+					UpdateRecordsCache()
 
 					local diff = worldRecord > 0 and " (-" .. FormatRecord(worldRecord - time) .. ")" or ""
 
 					PrintMessage(HUD_PRINTTALK, "[" .. ALT_NAME .. "] " .. name .. " set a new " .. style .. " World Record of " .. FormatRecord(time) .. diff)
 				elseif time < personalRecord or personalRecord == 0 then
-					WriteToCache(personalRecordsCache, name, steamID, "name")
-					WriteToCache(personalRecordsCache, time, steamID, style)
-					UpdatePersonalRecordsCache()
+					WriteToCache(recordsCache, {name = name, time = time}, style, steamID)
+					UpdateRecordsCache()
 
 					local diff = personalRecord > 0 and " (-" .. FormatRecord(personalRecord - time) .. ")" or ""
 
@@ -50,8 +47,8 @@ function ENT:StartTouch(ent)
 					ent:SendLua('chat.AddText(Color(151, 211, 255), "[" .. ALT_NAME .. "] You did not beat your Personal Record (+" .. FormatRecord(' .. time - personalRecord .. ') .. ")")')
 				end
 
-				WriteToCache(tempPlayerCache, 0, ent:SteamID(), "timerStart")
-				UpdateTempPlayerCache()
+				WriteToCache(tempCache, 0, steamID, "timer_start")
+				UpdateTempCache()
 			end
 		end
 	end

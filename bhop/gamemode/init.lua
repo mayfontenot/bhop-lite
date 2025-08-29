@@ -16,10 +16,10 @@ include("sv_movement.lua")
 include("sv_commands.lua")
 
 function ChangeLevel(map)
-	PrintMessage(HUD_PRINTTALK, "[" .. ALT_NAME .. "] Changing level to " .. map .. " in 5 seconds, expect lag")
-	WriteToJSON()
+	PrintMessage(HUD_PRINTTALK, "[" .. ALT_NAME .. "] Changing level to " .. map .. " in 10 seconds, expect lag")
+	WriteToDB()
 
-	timer.Simple(5, function()
+	timer.Simple(10, function()
 		RunConsoleCommand("changelevel", map)
 	end)
 end
@@ -29,7 +29,7 @@ startZone, endZone = nil, nil
 function GM:Initialize()
 	startZone, endZone = ents.Create("zone_start"), ents.Create("zone_end")
 
-	ReadFromJSON()
+	ReadFromDB()
 end
 
 function GM:OnEntityCreated(ent)			--fix for maps potentially containing backdoors
@@ -74,12 +74,9 @@ function GM:PlayerInitialSpawn(ply)
 	ply:SetModel(models[math.random(#models)])
 	ply:SetTeam(TEAM_PLAYER)
 
-	UpdateTempPlayerCache(ply) --here we only send cache to the player that connected instead of broadcasting to all players, because other players have these caches already
-	UpdatePlayerCache(ply)
-	UpdatePersonalRecordsCache(ply)
-	UpdateWorldRecordsCache(ply)
+	UpdateTempCache(ply) --here we only send cache to the player that connected instead of broadcasting to all players, because other players have these caches already
+	UpdateRecordsCache(ply)
 	UpdateMapCache(ply)
-	UpdateMapsCache(ply)
 
 	ply:SetNoCollideWithTeammates(true)
 	ply:SetAvoidPlayers(false)
@@ -112,8 +109,8 @@ function GM:EntityFireBullets(ent, data)				--refill the magazine when player sh
 end
 
 function GM:PlayerNoClip(ply)										--disable timer if player noclips
-	WriteToCache(tempPlayerCache, -1, ply:SteamID(), "timerStart")
-	UpdateTempPlayerCache()
+	WriteToCache(tempCache, -1, ply:SteamID64(), "timer_start")
+	UpdateTempCache()
 
 	return true
 end

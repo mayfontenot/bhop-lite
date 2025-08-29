@@ -1,98 +1,96 @@
-util.AddNetworkString("tempPlayerCacheUpdate")
-util.AddNetworkString("playerCacheUpdate")
-util.AddNetworkString("personalRecordsCacheUpdate")
-util.AddNetworkString("worldRecordsCacheUpdate")
+util.AddNetworkString("tempCacheUpdate")
 util.AddNetworkString("mapCacheUpdate")
-util.AddNetworkString("mapsCacheUpdate")
+util.AddNetworkString("recordsCacheUpdate")
 
-function WriteToJSON()
-	file.CreateDir("bhop")
-	file.Write("bhop/player.json", util.TableToJSON(playerCache, true))
-	file.Write("bhop/" .. game.GetMap() .. ".json", util.TableToJSON({["personalRecords"] = personalRecordsCache, ["worldRecords"] = worldRecordsCache, ["map"] = mapCache, ["wrReplay"] = wrReplayCache}, true))
+function WriteToDB()
+	local map = game.GetMap()
+
+	sql.Query("CREATE TABLE IF NOT EXISTS maps (map TEXT PRIMARY KEY, tier INTEGER, start_x REAL, start_y REAL, start_z REAL, start_l REAL, start_w REAL, start_h REAL, end_x REAL, end_y REAL, end_z REAL, end_l REAL, end_w REAL, end_h REAL)")
+	sql.Query("CREATE TABLE IF NOT EXISTS records (map TEXT, style TEXT, steam_id INTEGER, name TEXT, time REAL, PRIMARY KEY (map, style, steam_id))")
+	sql.Query("CREATE TABLE IF NOT EXISTS replays (map TEXT, style TEXT, frame INTEGER, x REAL, y REAL, z REAL, pitch REAL, yaw REAL, PRIMARY KEY (map, style, frame))")
+	sql.Query("CREATE TABLE IF NOT EXISTS roles (steam_id INTEGER PRIMARY KEY, role TEXT)")
+
+	if table.Count(mapCache) > 0 then
+		sql.QueryTyped("INSERT OR REPLACE INTO maps (map, tier, start_x, start_y, start_z, start_l, start_w, start_h, end_x, end_y, end_z, end_l, end_w, end_h) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", map, mapCache.tier, mapCache.start_x, mapCache.start_y, mapCache.start_z, mapCache.start_l, mapCache.start_w, mapCache.start_h, mapCache.end_x, mapCache.end_y, mapCache.end_z, mapCache.end_l, mapCache.end_w, mapCache.end_h)
+	end
+
+	for style, record in pairs(recordsCache) do
+		for steam_id, v in pairs(record) do
+			sql.QueryTyped("INSERT OR REPLACE INTO records (map, style, steam_id, name, time) VALUES (?, ?, ?, ?, ?)", map, style, steam_id, v.name, v.time)
+		end
+	end
+
+	for style, frames in pairs(replayCache) do
+		for frame, v in pairs(frames) do
+			sql.QueryTyped("INSERT OR REPLACE INTO replays (map, style, frame, x, y, z, pitch, yaw) VALUES (?, ?, ?, ?, ?, ?, ?, ?)", map, style, frame, v.x, v.y, v.z, v.pitch, v.yaw)
+		end
+	end
+
+	for steam_id, v in pairs(roleCache) do
+		sql.QueryTyped("INSERT OR REPLACE INTO roles (steam_id, role) VALUES (?, ?)", steam_id, v)
+	end
 end
 
-function ReadFromJSON()
+function ReadFromDB()
 	local map = game.GetMap()
-	local tempCache = file.Exists("bhop/" .. map .. ".json", "DATA") and util.JSONToTable(file.Read("bhop/" .. map .. ".json", "DATA"), false, false) or {}
 
-	playerCache = file.Exists("bhop/player.json", "DATA") and util.JSONToTable(file.Read("bhop/player.json", "DATA"), false, false) or {}
-	personalRecordsCache = ReadFromCache(tempCache, {}, "personalRecords")
-	worldRecordsCache = ReadFromCache(tempCache, {}, "worldRecords")
-	mapCache = ReadFromCache(tempCache, {}, "map")
-	mapsCache = file.Find("maps/*.bsp", "GAME")
-	wrReplayCache = ReadFromCache(tempCache, {}, "wrReplay")
+	local tempMapCache = sql.QueryTyped("SELECT * FROM maps WHERE map = ?", map) --may return table or false depending on success
+	if tempMapCache then
+		mapCache = tempMapCache[1]
 
-	startZone:SetPos(Vector(ReadFromCache(mapCache, 0, "startX"), ReadFromCache(mapCache, 0, "startY"), ReadFromCache(mapCache, 0, "startZ")))
-	endZone:SetPos(Vector(ReadFromCache(mapCache, 0, "endX"), ReadFromCache(mapCache, 0, "endY"), ReadFromCache(mapCache, 0, "endZ")))
+		startZone:SetPos(Vector(mapCache.start_x, mapCache.start_y, mapCache.start_z))
+		endZone:SetPos(Vector(mapCache.end_x, mapCache.end_y, mapCache.end_z))
 
-	startZone.size = Vector(ReadFromCache(mapCache, 0, "startL"), ReadFromCache(mapCache, 0, "startW"), ReadFromCache(mapCache, 0, "startH"))
-	endZone.size = Vector(ReadFromCache(mapCache, 0, "endL"), ReadFromCache(mapCache, 0, "endW"), ReadFromCache(mapCache, 0, "endH"))
+		startZone.size = Vector(mapCache.start_l, mapCache.start_w, mapCache.start_h)
+		endZone.size = Vector(mapCache.end_l, mapCache.end_w, mapCache.end_h)
 
-	startZone:Spawn()
-	endZone:Spawn()
+		startZone:Spawn()
+		endZone:Spawn()
+	end
+
+	local tempRecordsCache = sql.QueryTyped("SELECT * FROM records WHERE map = ?", map)
+	if tempRecordsCache then
+		for k, v in pairs(tempRecordsCache) do
+			WriteToCache(recordsCache, {name = v.name, time = v.time}, v.style, v.steam_id)
+		end
+	end
+
+	local tempReplayCache = sql.QueryTyped("SELECT * FROM replays WHERE map = ?", map)
+	if tempReplayCache then
+		for k, v in pairs(tempReplayCache) do
+			WriteToCache(replayCache, {x = v.x, y = v.y, z = v.z, pitch = v.pitch, yaw = v.yaw}, v.style, v.frame)
+		end
+	end
+
+	local tempRoleCache = sql.QueryTyped("SELECT * FROM roles")
+	if tempRoleCache then
+		for k, v in pairs(tempRoleCache) do
+			WriteToCache(roleCache, v.role, v.steam_id)
+		end
+	end
 end
 
 function WriteToCache(cache, value, ...) -- ... represents an infinite number of nested indices, you can index the cache for as many nested indices as the cache table has
 	local indices = {...}
-	local tempCache = cache
 
     for i = 1, #indices - 1 do
         local key = indices[i]
 
-        if not tempCache[key] then
-            tempCache[key] = {}
+        if not cache[key] then
+            cache[key] = {}
         end
 
-        tempCache = tempCache[key]
+        cache = cache[key]
     end
 
-    tempCache[indices[#indices]] = value
+    cache[indices[#indices]] = value
 end
 
-function UpdateTempPlayerCache(ply)
+function UpdateTempCache(ply)
 	local ply = ply or nil
 
-	net.Start("tempPlayerCacheUpdate")
-	net.WriteTable(tempPlayerCache)
-
-	if ply == nil then
-		net.Broadcast()
-	else
-		net.Send(ply)
-	end
-end
-
-function UpdatePlayerCache(ply)
-	local ply = ply or nil
-
-	net.Start("playerCacheUpdate")
-	net.WriteTable(playerCache)
-
-	if ply == nil then
-		net.Broadcast()
-	else
-		net.Send(ply)
-	end
-end
-
-function UpdatePersonalRecordsCache(ply)
-	local ply = ply or nil
-
-	net.Start("personalRecordsCacheUpdate")
-	net.WriteTable(personalRecordsCache)
-
-	if ply == nil then
-		net.Broadcast()
-	else
-		net.Send(ply)
-	end
-end
-
-function UpdateWorldRecordsCache(ply)
-	local ply = ply or nil
-
-	net.Start("worldRecordsCacheUpdate")
-	net.WriteTable(worldRecordsCache)
+	net.Start("tempCacheUpdate")
+	net.WriteTable(tempCache)
 
 	if ply == nil then
 		net.Broadcast()
@@ -114,11 +112,11 @@ function UpdateMapCache(ply)
 	end
 end
 
-function UpdateMapsCache(ply)
+function UpdateRecordsCache(ply)
 	local ply = ply or nil
 
-	net.Start("mapsCacheUpdate")
-	net.WriteTable(mapsCache)
+	net.Start("recordsCacheUpdate")
+	net.WriteTable(recordsCache)
 
 	if ply == nil then
 		net.Broadcast()

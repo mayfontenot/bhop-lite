@@ -1,4 +1,4 @@
---cache commonly used methods, these are not precached by the lua engine
+--cache commonly used methods and constants, these are not precached by the lua engine
 util = util
 util.PrecacheModel = util.PrecacheModel
 util.AddNetworkString = util.AddNetworkString
@@ -57,21 +57,18 @@ IN_ATTACK = IN_ATTACK
 IN_ATTACK2 = IN_ATTACK2
 IN_JUMP = IN_JUMP
 
-tempPlayerCache = {} --stores timerStart and styles
-playerCache = {} --stores player roles and points
-personalRecordsCache = {} --stores personal records
-worldRecordsCache = {} --stores world records
-mapCache = {} --stores map tier start zone pos and size, end zone pos and size
-mapsCache = {} --stores the names of all maps
-replayCache = {} --stores movedata of players
-wrReplayCache = {} --stores movedata of WR bot
+tempCache = {} --stores timer_start and style to [steam_id]
+mapCache = {} --stores tier, start zone, and end zone
+recordsCache = {} --stores name and time to [steam_id]
+replayCache = {} --stores replay to [steam_id], not networked
+roleCache = {} --stores role to [steam_id], not networked
 
-function ReadFromCache(cache, fallback, ...) -- ... represents an infinite number of nested indices, you can index the cache for as many nested indices as the cache table has
+function ReadFromCache(cache, fallBack, ...) -- ... represents an infinite number of nested indices, you can index the cache for as many nested indices as the cache table has
 	for _, v in ipairs({...}) do
 		if cache[v] then
 			cache = cache[v]
 		else
-			return fallback
+			return fallBack
 		end
 	end
 

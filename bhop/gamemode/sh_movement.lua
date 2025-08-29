@@ -1,49 +1,51 @@
 function GM:SetupMove(ply, mv, cmd)
-	local steamID = ply:SteamID()
+	local steamID = ply:SteamID64()
 
 	if SERVER then
 		if not ply:IsBot() then			--record replays
-			local steamID = ply:SteamID()
-
-			if ReadFromCache(tempPlayerCache, 0, steamID, "timerStart") > 0 then
+			if ReadFromCache(tempCache, 0, steamID, "timer_start") > 0 then
 				ply.replayMV = ply.replayMV and ply.replayMV + 1 or 1
 
 				local pos, ang = mv:GetOrigin(), ply:EyeAngles()
 
-				WriteToCache(replayCache, {["posX"] = pos.x, ["posY"] = pos.y, ["posZ"] = pos.z, ["angP"] = ang.p, ["angY"] = ang.y}, steamID, ply.replayMV)
+				if not ply.replayCache then
+					ply.replayCache = {}
+				end
+
+				ply.replayCache[ply.replayMV] = {x = pos.x, y = pos.y, z = pos.z, pitch = ang.p, yaw = ang.y}
 			else
-				WriteToCache(replayCache, {}, steamID)
+				ply.replayCache = {}
 				ply.replayMV = 0
 			end
-		end
+		elseif ply:IsBot() then						--play replay
+			if not ply.replayMV then
+				ply:SetMoveType(MOVETYPE_NONE)
+				ply:SetRenderMode(RENDERMODE_NONE)
+				ply:SetFOV(100)
 
-		if ply:IsBot() then						--play replay
-			ply:SetMoveType(MOVETYPE_NONE)
-			ply:SetRenderMode(RENDERMODE_NONE)
-			ply:SetFOV(100)
+				ply.replayMV = 1
+			end
 
-			local mvTable = ReadFromCache(wrReplayCache, nil, ReadFromCache(tempPlayerCache, STYLE_AUTO, steamID, "style"))
+			local mvTable = ReadFromCache(replayCache, nil, ReadFromCache(tempCache, STYLE_AUTO, steamID, "style"))
 
 			if mvTable then
-				if not ply.replayMV then
-					ply.replayMV = 1
+				local spectators = GetSpectators(ply)
+
+				if #spectators > 0 and ply.replayMV == 1 then
+					WriteToCache(tempCache, CurTime(), steamID, "timer_start")
+					UpdateTempCache()
 				end
 
-				if #GetSpectators(ply) > 0 and ply.replayMV == 1 then
-					WriteToCache(tempPlayerCache, CurTime(), steamID, "timerStart")
-					UpdateTempPlayerCache()
-				end
+				mv:SetOrigin(Vector(mvTable[ply.replayMV].x, mvTable[ply.replayMV].y, mvTable[ply.replayMV].z))
+				ply:SetEyeAngles(Angle(mvTable[ply.replayMV].pitch, mvTable[ply.replayMV].yaw, 0))
 
-				mv:SetOrigin(Vector(mvTable[ply.replayMV]["posX"], mvTable[ply.replayMV]["posY"], mvTable[ply.replayMV]["posZ"]))
-				ply:SetEyeAngles(Angle(mvTable[ply.replayMV]["angP"], mvTable[ply.replayMV]["angY"], 0))
-
-				if #GetSpectators(ply) > 0 then
+				if #spectators > 0 then
 					ply.replayMV = ply.replayMV + 1
 				end
 
-				if ply.replayMV > #mvTable or #GetSpectators(ply) == 0 then
-					WriteToCache(tempPlayerCache, 0, steamID, "timerStart")
-					UpdateTempPlayerCache()
+				if ply.replayMV > #mvTable or #spectators == 0 then
+					WriteToCache(tempCache, 0, steamID, "timer_start")
+					UpdateTempCache()
 
 					ply.replayMV = 1
 				end
@@ -54,9 +56,10 @@ function GM:SetupMove(ply, mv, cmd)
 	if ply:GetMoveType() ~= MOVETYPE_WALK then return end
 
 	local onGround = ply:OnGround()
+	local style = ReadFromCache(tempCache, STYLE_AUTO, steamID, "style")
 
 	--autohop by FiBzY to be crouch boost fix compatible
-	if ReadFromCache(tempPlayerCache, STYLE_AUTO, steamID, "style") ~= STYLE_MANUAL and cmd:KeyDown(IN_JUMP) and onGround and ply:WaterLevel() < 2 then
+	if style ~= STYLE_MANUAL and cmd:KeyDown(IN_JUMP) and onGround and ply:WaterLevel() < 2 then
 		mv:SetOldButtons(mv:GetButtons() - IN_JUMP)
 	end
 
@@ -69,8 +72,6 @@ function GM:SetupMove(ply, mv, cmd)
 	end
 
 	if onGround then return end
-
-	local style = ReadFromCache(tempPlayerCache, STYLE_AUTO, steamID, "style")
 
 	if style == STYLE_SIDEWAYS or style == STYLE_W_ONLY then			--movement restrictions
 		mv:SetSideSpeed(0)
@@ -95,7 +96,7 @@ local AIR_ACCEL = 500
 function GM:Move(ply, mv)
 	if ply:OnGround() or ply:Team() == TEAM_SPECTATOR then return end
 
-	local style = ReadFromCache(tempPlayerCache, STYLE_AUTO, ply:SteamID(), "style")
+	local style = ReadFromCache(tempCache, STYLE_AUTO, ply:SteamID64(), "style")
 	local vel, ang = mv:GetVelocity(), mv:GetMoveAngles()
 	local forward, right = ang:Forward(), ang:Right()
 	local fSpeed, sSpeed = mv:GetForwardSpeed(), mv:GetSideSpeed()
