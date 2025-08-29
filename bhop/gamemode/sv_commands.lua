@@ -1,10 +1,11 @@
 local function ChangeStyle(ply, newStyle)
 	local steamID = ply:SteamID64()
 
-	if ReadFromCache(tempCache, STYLE_AUTO, steamID, "style") ~= newStyle then
+	if tempCache[steamID].style ~= newStyle then
 		ply:Spawn()
 
-		WriteToCache(tempCache, newStyle, steamID, "style")
+		tempCache[steamID].style = newStyle
+
 		UpdateTempCache()
 	end
 end
@@ -39,7 +40,8 @@ function GM:PlayerSay(sender, text, teamChat)
 	elseif text == "restart" or text == "r" then
 		sender:Spawn()
 
-		WriteToCache(tempCache, 0, sender:SteamID64(), "timer_start")
+		tempCache[sender:SteamID64()].timer_start = 0
+
 		UpdateTempCache()
 	elseif text == "usp" then
 		sender:Give("weapon_usp")
@@ -65,7 +67,8 @@ function GM:PlayerSay(sender, text, teamChat)
 			sender:UnSpectate()
 			sender:Spawn()
 		else
-			WriteToCache(tempCache, 0, sender:SteamID64(), "timer_start")
+			tempCache[sender:SteamID64()].timer_start = 0
+
 			UpdateTempCache()
 
 			sender:SetTeam(TEAM_SPECTATOR)
@@ -73,30 +76,29 @@ function GM:PlayerSay(sender, text, teamChat)
 			sender:Spectate(OBS_MODE_IN_EYE)
 		end
 	elseif string.StartsWith(text, "tier ") then
-		if ReadFromCache(roleCache, ROLE_USER, sender:SteamID64()) == ROLE_ADMIN then
-			local tier = string.sub(text, 6)
+		if (roleCache[sender:SteamID64()] or ROLE_USER) == ROLE_ADMIN then
+			mapCache.tier = string.sub(text, 6)
 
-			WriteToCache(mapCache, tier, "tier")
 			UpdateMapCache()
 		end
 	elseif string.StartsWith(text, "map ") then
-		if ReadFromCache(roleCache, ROLE_USER, sender:SteamID64()) == ROLE_ADMIN then
+		if (roleCache[sender:SteamID64()] or ROLE_USER) == ROLE_ADMIN then
 			ChangeLevel(string.sub(text, 5))
 		end
 	elseif text == "start pos1" then
-		if ReadFromCache(roleCache, ROLE_USER, sender:SteamID64()) == ROLE_ADMIN then
+		if (roleCache[sender:SteamID64()] or ROLE_USER) == ROLE_ADMIN then
 			startZone.pos1 = sender:GetPos()
 		end
 	elseif text == "end pos1" then
-		if ReadFromCache(roleCache, ROLE_USER, sender:SteamID64()) == ROLE_ADMIN then
+		if (roleCache[sender:SteamID64()] or ROLE_USER) == ROLE_ADMIN then
 			endZone.pos1 = sender:GetPos()
 		end
 	elseif text == "start pos2" then
-		if ReadFromCache(roleCache, ROLE_USER, sender:SteamID64()) == ROLE_ADMIN then
+		if (roleCache[sender:SteamID64()] or ROLE_USER) == ROLE_ADMIN then
 			UpdateZone(sender:EyePos(), "start")
 		end
 	elseif text == "end pos2" then
-		if ReadFromCache(roleCache, ROLE_USER, sender:SteamID64()) == ROLE_ADMIN then
+		if (roleCache[sender:SteamID64()] or ROLE_USER) == ROLE_ADMIN then
 			UpdateZone(sender:EyePos(), "end")
 		end
 	else

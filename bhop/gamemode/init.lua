@@ -74,6 +74,8 @@ function GM:PlayerInitialSpawn(ply)
 	ply:SetModel(models[math.random(#models)])
 	ply:SetTeam(TEAM_PLAYER)
 
+	tempCache[ply:SteamID64()] = {style = STYLE_AUTO, timer_start = 0}
+
 	UpdateTempCache(ply) --here we only send cache to the player that connected instead of broadcasting to all players, because other players have these caches already
 	UpdateRecordsCache(ply)
 	UpdateMapCache(ply)
@@ -109,7 +111,8 @@ function GM:EntityFireBullets(ent, data)				--refill the magazine when player sh
 end
 
 function GM:PlayerNoClip(ply)										--disable timer if player noclips
-	WriteToCache(tempCache, -1, ply:SteamID64(), "timer_start")
+	tempCache[ply:SteamID64()].timer_start = -1
+
 	UpdateTempCache()
 
 	return true

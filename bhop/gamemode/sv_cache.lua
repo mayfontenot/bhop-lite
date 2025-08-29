@@ -66,7 +66,7 @@ function ReadCacheFromDB()
 	local tempRoleCache = sql.QueryTyped("SELECT * FROM roles")
 	if tempRoleCache then
 		for k, v in pairs(tempRoleCache) do
-			WriteToCache(roleCache, v.role, v.steam_id)
+			roleCache[v.steam_id] = v.role
 		end
 	end
 end
@@ -124,5 +124,4 @@ function UpdateRecordsCache(ply)
 	else
 		net.Send(ply)
 	end
-
 end

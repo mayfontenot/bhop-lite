@@ -18,8 +18,9 @@ function ENT:EndTouch(ent)
 	if IsValid(ent) and ent:IsPlayer() then
 		local steamID = ent:SteamID64()
 
-		if  ent:Team() ~= TEAM_SPECTATOR and ent:GetMoveType() == MOVETYPE_WALK and ReadFromCache(tempCache, 0, steamID, "timer_start") == 0 then
-			WriteToCache(tempCache, CurTime(), steamID, "timer_start")
+		if  ent:Team() ~= TEAM_SPECTATOR and ent:GetMoveType() == MOVETYPE_WALK and tempCache[steamID].timer_start == 0 then
+			tempCache[steamID].timer_start = CurTime()
+
 			UpdateTempCache()
 		end
 	end
@@ -31,11 +32,13 @@ function ENT:Touch(ent)
 			local steamID = ent:SteamID64()
 			ent.groundTicks = (ent:OnGround() and ent.groundTicks) and ent.groundTicks + 1 or 0
 
-			if not ent:OnGround() and ReadFromCache(tempCache, 0, steamID, "timer_start") == 0 then
-				WriteToCache(tempCache, CurTime(), steamID, "timer_start")
+			if not ent:OnGround() and tempCache[steamID].timer_start == 0 then
+				tempCache[steamID].timer_start = CurTime()
+
 				UpdateTempCache()
-			elseif ent.groundTicks >= 15 and ReadFromCache(tempCache, 0, steamID, "timer_start") > 0 then
-				WriteToCache(tempCache, 0, steamID, "timer_start")
+			elseif ent.groundTicks >= 15 and tempCache[steamID].timer_start > 0 then
+				tempCache[steamID].timer_start = 0
+
 				UpdateTempCache()
 			end
 		end

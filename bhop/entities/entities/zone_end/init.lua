@@ -18,20 +18,21 @@ function ENT:StartTouch(ent)
 	if IsValid(ent) and ent:IsPlayer() then
 		if not ent:IsBot() and ent:Team() ~= TEAM_SPECTATOR then
 			local steamID = ent:SteamID64()
-			local timerStart = ReadFromCache(tempCache, 0, steamID, "timer_start")
+			local timerStart = tempCache[steamID].timer_start
 
 			if timerStart > 0 then
 				local time = CurTime() - timerStart
 				local name = ent:Name()
-				local style = ReadFromCache(tempCache, STYLE_AUTO, steamID, "style")
+				local style = tempCache[steamID].style
 				local personalRecord = ReadFromCache(recordsCache, 0, style, steamID, "time")
 				local worldRecord = ReadFromCache(recordsCache, 0, style, 1, "time")
 
 				if time < worldRecord or worldRecord == 0 then
 					WriteToCache(recordsCache, {name = name, time = time}, style, steamID)
 					WriteToCache(recordsCache, {steam_id = steamID, name = name, time = time}, style, 1)
-					WriteToCache(replayCache, ent.replayCache, style)
 					UpdateRecordsCache()
+
+					replayCache[style] = ent.replayCache
 
 					local diff = worldRecord > 0 and " (-" .. FormatRecord(worldRecord - time) .. ")" or ""
 
@@ -47,7 +48,8 @@ function ENT:StartTouch(ent)
 					ent:SendLua('chat.AddText(Color(151, 211, 255), "[" .. ALT_NAME .. "] You did not beat your Personal Record (+" .. FormatRecord(' .. time - personalRecord .. ') .. ")")')
 				end
 
-				WriteToCache(tempCache, 0, steamID, "timer_start")
+				tempCache[steamID].timer_start = 0
+
 				UpdateTempCache()
 			end
 		end

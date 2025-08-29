@@ -40,11 +40,13 @@ function GM:OnPlayerHitGround(ply, inWater, onFloater, speed)		--ssj counter
 	ply.jumps = ply:KeyDown(IN_JUMP) and ply.jumps + 1 or 1
 
 	if ply.jumps > 1 and ply.jumps % 6 == 0 then
-		ply:SendLua('chat.AddText(Color(151, 211, 255), "[" .. ALT_NAME .. "] Jump ' .. ply.jumps .. ': " .. math.Round(' .. ply:GetVelocity():Length2D() .. ') .. " u/s")')
+		local vel = ply:GetVelocity():Length2D()
+
+		ply:SendLua('chat.AddText(Color(151, 211, 255), "[" .. ALT_NAME .. "] Jump ' .. ply.jumps .. ': " .. math.Round(' .. vel .. ') .. " u/s")')
 
 		for _, v in pairs(team.GetPlayers(TEAM_SPECTATOR)) do
 			if v:GetObserverTarget() == ply then
-				v:SendLua('chat.AddText(Color(151, 211, 255), "[" .. ALT_NAME .. "] Jump ' .. ply.jumps .. ': " .. math.Round(' .. ply:GetVelocity():Length2D() .. ') .. " u/s")')
+				v:SendLua('chat.AddText(Color(151, 211, 255), "[" .. ALT_NAME .. "] Jump ' .. ply.jumps .. ': " .. math.Round(' .. vel .. ') .. " u/s")')
 			end
 		end
 	end

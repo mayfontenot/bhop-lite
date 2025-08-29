@@ -24,8 +24,8 @@ function GM:HUDPaint()
 	ply = IsValid(observerTarget) and observerTarget or ply
 
 	local steamID = ply:SteamID64()
-	local style = ReadFromCache(tempCache, STYLE_AUTO, steamID, "style")
-	local timerStart = ReadFromCache(tempCache, 0, steamID, "timer_start")
+	local style = tempCache[steamID].style
+	local timerStart = tempCache[steamID].timer_start
 	local worldRecord = ReadFromCache(recordsCache, 0, style, 1, "time")
 	local personalRecord = ReadFromCache(recordsCache, 0, style, steamID, "time")
 	local time = timerStart > 0 and (FormatTime(CurTime() - timerStart)) or "Stopped"
@@ -109,8 +109,8 @@ function GM:HUDDrawScoreBoard()
 
 	for k, v in ipairs(team.GetPlayers(TEAM_PLAYER)) do
 		local steamID = v:SteamID64()
-		local style = ReadFromCache(tempCache, STYLE_AUTO, steamID, "style")
-		local timerStart = ReadFromCache(tempCache, 0, steamID, "timer_start")
+		local style = tempCache[steamID].style
+		local timerStart = tempCache[steamID].timer_start
 
 		local personalRecord = ReadFromCache(recordsCache, 0, style, steamID, "time")
 		personalRecord = personalRecord > 0 and FormatRecord(personalRecord) or "None"
