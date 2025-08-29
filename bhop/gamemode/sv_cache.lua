@@ -16,6 +16,8 @@ function WriteCacheToDB()
 	end
 
 	for style, frames in pairs(replayCache) do
+		sql.QueryTyped("DELETE FROM replays WHERE map = ? AND style = ?", map, style)
+
 		for frame, v in pairs(frames) do
 			sql.QueryTyped("INSERT OR REPLACE INTO replays (map, style, frame, x, y, z, pitch, yaw) VALUES (?, ?, ?, ?, ?, ?, ?, ?)", map, style, frame, v.x, v.y, v.z, v.pitch, v.yaw)
 		end

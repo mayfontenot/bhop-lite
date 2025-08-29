@@ -6,7 +6,7 @@ function GM:SetupMove(ply, mv, cmd)
 			if tempCache[steamID].timer_start > 0 then
 				ply.replayMV = ply.replayMV and ply.replayMV + 1 or 1
 
-				local pos, ang = mv:GetOrigin(), ply:EyeAngles()
+				local pos, ang = mv:GetOrigin(), mv:GetAngles()
 
 				if not ply.replayCache then
 					ply.replayCache = {}
