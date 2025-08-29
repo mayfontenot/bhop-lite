@@ -17,7 +17,7 @@ include("sv_commands.lua")
 
 function ChangeLevel(map)
 	PrintMessage(HUD_PRINTTALK, "[" .. ALT_NAME .. "] Changing level to " .. map .. " in 10 seconds, expect lag")
-	WriteToDB()
+	WriteCacheToDB()
 
 	timer.Simple(10, function()
 		RunConsoleCommand("changelevel", map)
@@ -29,7 +29,7 @@ startZone, endZone = nil, nil
 function GM:Initialize()
 	startZone, endZone = ents.Create("zone_start"), ents.Create("zone_end")
 
-	ReadFromDB()
+	ReadCacheFromDB()
 end
 
 function GM:OnEntityCreated(ent)			--fix for maps potentially containing backdoors

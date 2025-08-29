@@ -2,13 +2,8 @@ util.AddNetworkString("tempCacheUpdate")
 util.AddNetworkString("mapCacheUpdate")
 util.AddNetworkString("recordsCacheUpdate")
 
-function WriteToDB()
+function WriteCacheToDB()
 	local map = game.GetMap()
-
-	sql.Query("CREATE TABLE IF NOT EXISTS maps (map TEXT PRIMARY KEY, tier INTEGER, start_x REAL, start_y REAL, start_z REAL, start_l REAL, start_w REAL, start_h REAL, end_x REAL, end_y REAL, end_z REAL, end_l REAL, end_w REAL, end_h REAL)")
-	sql.Query("CREATE TABLE IF NOT EXISTS records (map TEXT, style TEXT, steam_id INTEGER, name TEXT, time REAL, PRIMARY KEY (map, style, steam_id))")
-	sql.Query("CREATE TABLE IF NOT EXISTS replays (map TEXT, style TEXT, frame INTEGER, x REAL, y REAL, z REAL, pitch REAL, yaw REAL, PRIMARY KEY (map, style, frame))")
-	sql.Query("CREATE TABLE IF NOT EXISTS roles (steam_id INTEGER PRIMARY KEY, role TEXT)")
 
 	if table.Count(mapCache) > 0 then
 		sql.QueryTyped("INSERT OR REPLACE INTO maps (map, tier, start_x, start_y, start_z, start_l, start_w, start_h, end_x, end_y, end_z, end_l, end_w, end_h) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", map, mapCache.tier, mapCache.start_x, mapCache.start_y, mapCache.start_z, mapCache.start_l, mapCache.start_w, mapCache.start_h, mapCache.end_x, mapCache.end_y, mapCache.end_z, mapCache.end_l, mapCache.end_w, mapCache.end_h)
@@ -31,7 +26,13 @@ function WriteToDB()
 	end
 end
 
-function ReadFromDB()
+function ReadCacheFromDB()
+	sql.QueryTyped("CREATE TABLE IF NOT EXISTS maps (map TEXT PRIMARY KEY, tier INTEGER, start_x REAL, start_y REAL, start_z REAL, start_l REAL, start_w REAL, start_h REAL, end_x REAL, end_y REAL, end_z REAL, end_l REAL, end_w REAL, end_h REAL)")
+	sql.QueryTyped("CREATE TABLE IF NOT EXISTS records (map TEXT, style TEXT, steam_id INTEGER, name TEXT, time REAL, PRIMARY KEY (map, style, steam_id))")
+	sql.QueryTyped("CREATE TABLE IF NOT EXISTS replays (map TEXT, style TEXT, frame INTEGER, x REAL, y REAL, z REAL, pitch REAL, yaw REAL, PRIMARY KEY (map, style, frame))")
+	sql.QueryTyped("CREATE TABLE IF NOT EXISTS roles (steam_id INTEGER PRIMARY KEY, role TEXT)")
+	sql.QueryTyped("INSERT OR IGNORE INTO roles (steam_id, role) VALUES (?, ?)", OWNER_STEAM_ID_64, ROLE_ADMIN)
+
 	local map = game.GetMap()
 
 	local tempMapCache = sql.QueryTyped("SELECT * FROM maps WHERE map = ?", map) --may return table or false depending on success
