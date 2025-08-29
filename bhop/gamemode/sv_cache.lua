@@ -37,7 +37,7 @@ function ReadCacheFromDB()
 
 	local tempMapCache = sql.QueryTyped("SELECT * FROM maps WHERE map = ?", map) --may return table or false depending on success
 	if tempMapCache then
-		mapCache = tempMapCache[1]
+		mapCache = tempMapCache[1] or {}
 
 		startZone:SetPos(Vector(mapCache.start_x, mapCache.start_y, mapCache.start_z))
 		endZone:SetPos(Vector(mapCache.end_x, mapCache.end_y, mapCache.end_z))
@@ -124,4 +124,5 @@ function UpdateRecordsCache(ply)
 	else
 		net.Send(ply)
 	end
+
 end
