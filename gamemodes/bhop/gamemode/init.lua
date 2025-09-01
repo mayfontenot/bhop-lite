@@ -17,9 +17,9 @@ include("sv_commands.lua")
 
 function ChangeLevel(map)
 	PrintMessage(HUD_PRINTTALK, "[" .. ALT_NAME .. "] Changing level to " .. map .. " in 10 seconds, expect lag")
-	WriteCacheToDB()
 
 	timer.Simple(10, function()
+		WriteCacheToDB()
 		RunConsoleCommand("changelevel", map)
 	end)
 end
