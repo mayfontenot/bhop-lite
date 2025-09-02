@@ -4,18 +4,13 @@ function GM:SetupMove(ply, mv, cmd)
 	if SERVER then
 		if not ply:IsBot() then			--record replays
 			if tempCache[steamID].timer_start > 0 then
-				ply.replayMV = ply.replayMV and ply.replayMV + 1 or 1
-
 				local pos, ang = mv:GetOrigin(), mv:GetAngles()
 
-				if not ply.replayCache then
-					ply.replayCache = {}
-				end
-
 				ply.replayCache[ply.replayMV] = {x = pos.x, y = pos.y, z = pos.z, pitch = ang.p, yaw = ang.y}
+				ply.replayMV = ply.replayMV + 1
 			else
 				ply.replayCache = {}
-				ply.replayMV = 0
+				ply.replayMV = 1
 			end
 		elseif ply:IsBot() then						--play replay
 			if not ply.replayMV then
