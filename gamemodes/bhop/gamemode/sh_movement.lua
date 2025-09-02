@@ -20,7 +20,6 @@ function GM:SetupMove(ply, mv, cmd)
 		elseif ply:IsBot() then						--play replay
 			if not ply.replayMV then
 				ply:SetMoveType(MOVETYPE_NONE)
-				ply:SetRenderMode(RENDERMODE_NONE)
 				ply:SetFOV(100)
 
 				ply.replayMV = 1
@@ -149,4 +148,5 @@ function GM:Move(ply, mv)
 	mv:SetVelocity(vel)
 
 	return false
+
 end
