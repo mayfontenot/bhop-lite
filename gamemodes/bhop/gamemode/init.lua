@@ -71,7 +71,7 @@ function GM:PlayerSelectSpawn(ply, transition)
 end
 
 function GM:PlayerInitialSpawn(ply)
-	ply:SetModel(models[math.random(#models)])
+	ply:SetModel(MODELS[math.random(#MODELS)])
 	ply:SetTeam(TEAM_PLAYER)
 
 	tempCache[ply:SteamID64()] = {style = STYLE_AUTO, timer_start = 0}

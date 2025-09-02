@@ -75,6 +75,6 @@ function ReadFromCache(cache, fallBack, ...) -- ... represents an infinite numbe
 	return cache
 end
 
-for _, v in pairs(models) do 	--cache playermodels
+for _, v in pairs(MODELS) do 	--cache playermodels
 	util.PrecacheModel(v)
 end
