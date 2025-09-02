@@ -67,10 +67,6 @@ function GM:PlayerSay(sender, text, teamChat)
 			sender:UnSpectate()
 			sender:Spawn()
 		else
-			tempCache[sender:SteamID64()].timer_start = 0
-
-			UpdateTempCache()
-
 			sender:SetTeam(TEAM_SPECTATOR)
 			sender:Spectate(OBS_MODE_IN_EYE)
 			sender:Spawn()
@@ -107,4 +103,5 @@ function GM:PlayerSay(sender, text, teamChat)
 	end
 
 	return ""
+
 end
