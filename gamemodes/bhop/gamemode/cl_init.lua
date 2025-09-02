@@ -16,10 +16,14 @@ function GM:InitPostEntity()		--hulls fix
 	ply:SetViewOffsetDucked(Vector(0, 0, 47))
 end
 
-function GM:CalcView(ply, origin, angles, fov, znear, zfar)     --view punch fix
+function GM:CalcView(ply, origin, angles, fov, znear, zfar)     --view punch and bot fov fix
     angles.r = 0
 
-    return {origin = origin, angles = angles, fov = fov, znear = znear, sfar = zfar}
+    return {origin = origin, angles = angles, fov = GetConVar("fov_desired"):GetFloat(), znear = znear, sfar = zfar}
+end
+
+function GM:PrePlayerDraw(ply)		--do not draw bots
+	return ply:IsBot()
 end
 
 hook.Remove("PreDrawHalos", "AddPhysgunHalos")	--remove hooks that cause lag

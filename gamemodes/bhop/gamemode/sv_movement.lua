@@ -1,35 +1,28 @@
 function GM:KeyPress(ply, key)												--spectator target switch
 	if ply:Team() == TEAM_SPECTATOR then
-		if key == IN_ATTACK then
+		if key == IN_ATTACK or key == IN_ATTACK2 then
 			local players = team.GetPlayers(TEAM_PLAYER)
 			local target = ply:GetObserverTarget()
+			local dir = 0
 
-			if not target or target:Team() == TEAM_SPECTATOR then
-				target = players[1]
+			if key == IN_ATTACK then
+				dir = dir - 1
+			elseif key == IN_ATTACK2 then
+				dir = dir + 1
 			end
 
 			local targetKey = table.KeyFromValue(players, target)
-			targetKey = targetKey + 1 > #players and 1 or targetKey + 1
+			targetKey = targetKey + dir
+
+			if targetKey > #players then
+				targetKey = 1
+			elseif targetKey < 1 then
+				targetKey = #players
+			end
 
 			target = players[targetKey]
 
-			if IsValid(target) and target ~= ply then
-				ply:SpectateEntity(target)
-			end
-		elseif key == IN_ATTACK2 then
-			local players = team.GetPlayers(TEAM_PLAYER)
-			local target = ply:GetObserverTarget()
-
-			if not target or target:Team() == TEAM_SPECTATOR then
-				target = players[1]
-			end
-
-			local targetKey = table.KeyFromValue(players, target)
-			targetKey = targetKey - 1 < 1 and #players or targetKey - 1
-
-			target = players[targetKey]
-
-			if IsValid(target) and target ~= ply and target:Team() ~= TEAM_SPECTATOR then
+			if IsValid(target) then
 				ply:SpectateEntity(target)
 			end
 		end

@@ -72,8 +72,9 @@ function GM:PlayerSay(sender, text, teamChat)
 			UpdateTempCache()
 
 			sender:SetTeam(TEAM_SPECTATOR)
-			sender:StripWeapons()
 			sender:Spectate(OBS_MODE_IN_EYE)
+			sender:Spawn()
+			sender:SpectateEntity(team.GetPlayers(TEAM_PLAYER)[1])
 		end
 	elseif string.StartsWith(text, "tier ") then
 		if (roleCache[sender:SteamID64()] or ROLE_USER) == ROLE_ADMIN then
