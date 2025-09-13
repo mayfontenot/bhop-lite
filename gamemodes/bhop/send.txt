@@ -1,0 +1,16 @@
+gamemodes\bhop\gamemode\shared.lua
+gamemodes\bhop\gamemode\sh_cache.lua
+gamemodes\bhop\gamemode\sh_movement.lua
+gamemodes\bhop\gamemode\sh_rngfix.lua
+gamemodes\bhop\gamemode\cl_init.lua
+gamemodes\bhop\gamemode\cl_cache.lua
+gamemodes\bhop\gamemode\cl_hud.lua
+gamemodes\bhop\gamemode\cl_menu.lua
+gamemodes\bhop\entities\entities\zone_start\shared.lua
+gamemodes\bhop\entities\entities\zone_start\cl_init.lua
+gamemodes\bhop\entities\entities\zone_end\shared.lua
+gamemodes\bhop\entities\entities\zone_end\cl_init.lua
+gamemodes\bhop\entities\weapons\weapon_cs_base.lua
+gamemodes\bhop\entities\weapons\weapon_glock.lua
+gamemodes\bhop\entities\weapons\weapon_knife.lua
+gamemodes\bhop\entities\weapons\weapon_usp.lua
