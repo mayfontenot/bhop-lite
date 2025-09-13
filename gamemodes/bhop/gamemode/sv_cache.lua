@@ -42,14 +42,16 @@ function ReadCacheFromDB()
 	if tempMapCache then
 		tempMapCache = tempMapCache[1]
 
-		startZone:SetPos(Vector(tempMapCache.start_x, tempMapCache.start_y, tempMapCache.start_z))
-		endZone:SetPos(Vector(tempMapCache.end_x, tempMapCache.end_y, tempMapCache.end_z))
+		if tempMapCache then
+			startZone:SetPos(Vector(tempMapCache.start_x, tempMapCache.start_y, tempMapCache.start_z))
+			endZone:SetPos(Vector(tempMapCache.end_x, tempMapCache.end_y, tempMapCache.end_z))
 
-		startZone.size = Vector(tempMapCache.start_l, tempMapCache.start_w, tempMapCache.start_h)
-		endZone.size = Vector(tempMapCache.end_l, tempMapCache.end_w, tempMapCache.end_h)
+			startZone.size = Vector(tempMapCache.start_l, tempMapCache.start_w, tempMapCache.start_h)
+			endZone.size = Vector(tempMapCache.end_l, tempMapCache.end_w, tempMapCache.end_h)
 
-		startZone:Spawn()
-		endZone:Spawn()
+			startZone:Spawn()
+			endZone:Spawn()
+		end
 	end
 
 	local tempRecordsCache = sql.QueryTyped("SELECT * FROM records WHERE map = ?", map)
