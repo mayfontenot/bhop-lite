@@ -8,14 +8,10 @@ surface.SetFont = surface.SetFont
 surface.SetDrawColor = surface.SetDrawColor
 surface.DrawRect = surface.DrawRect
 
-net.Receive("tempCacheUpdate", function(len, ply)
-	tempCache = net.ReadTable()
+net.Receive("playerCacheMessage", function(len, ply)
+	playerCache = net.ReadTable()
 end)
 
-net.Receive("mapCacheUpdate", function(len, ply)
-	mapCache = net.ReadTable()
-end)
-
-net.Receive("recordsCacheUpdate", function(len, ply)
+net.Receive("recordsCacheMessage", function(len, ply)
 	recordsCache = net.ReadTable()
 end)

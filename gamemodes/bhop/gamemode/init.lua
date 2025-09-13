@@ -53,7 +53,7 @@ function GM:InitPostEntity()
 		v:SetKeyValue("locked_sound", 0)
 	end
 
-	spawns = ents.FindByClass("info_player_start")
+	spawns = ents.FindByClass("info_player_start")			--find valid player spawns
 
 	if #spawns == 0 then
 		spawns = ents.FindByClass("info_player_counterterrorist")
@@ -74,11 +74,10 @@ function GM:PlayerInitialSpawn(ply)
 	ply:SetModel(MODELS[math.random(#MODELS)])
 	ply:SetTeam(TEAM_PLAYER)
 
-	tempCache[ply:SteamID64()] = {style = STYLE_AUTO, timer_start = 0}
+	playerCache[ply:SteamID64()] = {style = STYLE_AUTO, timerStart = 0}
 
-	UpdateTempCache(ply) --here we only send cache to the player that connected instead of broadcasting to all players, because other players have these caches already
-	UpdateRecordsCache(ply)
-	UpdateMapCache(ply)
+	NetworkPlayerCache(ply) --here we only send cache to the player that connected instead of broadcasting to all players, because other players have these caches already
+	NetworkRecordsCache(ply)
 
 	ply:SetNoCollideWithTeammates(true)
 	ply:SetAvoidPlayers(false)
@@ -110,10 +109,10 @@ function GM:EntityFireBullets(ent, data)				--refill the magazine when player sh
 	return true
 end
 
-function GM:PlayerNoClip(ply)										--disable timer if player noclips
-	tempCache[ply:SteamID64()].timer_start = -1
+function GM:PlayerNoClip(ply)	--disable timer if player noclips
+	playerCache[ply:SteamID64()].timerStart = -1
 
-	UpdateTempCache()
+	NetworkPlayerCache()
 
 	return true
 end

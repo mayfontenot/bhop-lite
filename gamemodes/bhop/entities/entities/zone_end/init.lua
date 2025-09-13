@@ -18,19 +18,19 @@ function ENT:StartTouch(ent)
 	if IsValid(ent) and ent:IsPlayer() then
 		if not ent:IsBot() and ent:Team() ~= TEAM_SPECTATOR then
 			local steamID = ent:SteamID64()
-			local timerStart = tempCache[steamID].timer_start
+			local timerStart = playerCache[steamID].timerStart
 
 			if timerStart > 0 then
 				local time = CurTime() - timerStart
 				local name = ent:Name()
-				local style = tempCache[steamID].style
+				local style = playerCache[steamID].style
 				local personalRecord = ReadFromCache(recordsCache, 0, style, steamID, "time")
 				local worldRecord = ReadFromCache(recordsCache, 0, style, 1, "time")
 
 				if time < worldRecord or worldRecord == 0 then
 					WriteToCache(recordsCache, {name = name, time = time}, style, steamID)
 					WriteToCache(recordsCache, {steam_id = steamID, name = name, time = time}, style, 1)
-					UpdateRecordsCache()
+					NetworkRecordsCache()
 
 					replayCache[style] = ent.replayCache
 
@@ -39,7 +39,7 @@ function ENT:StartTouch(ent)
 					PrintMessage(HUD_PRINTTALK, "[" .. ALT_NAME .. "] " .. name .. " set a new " .. style .. " World Record of " .. FormatRecord(time) .. diff)
 				elseif time < personalRecord or personalRecord == 0 then
 					WriteToCache(recordsCache, {name = name, time = time}, style, steamID)
-					UpdateRecordsCache()
+					NetworkRecordsCache()
 
 					local diff = personalRecord > 0 and " (-" .. FormatRecord(personalRecord - time) .. ")" or ""
 
@@ -48,9 +48,9 @@ function ENT:StartTouch(ent)
 					ent:SendLua('chat.AddText(Color(151, 211, 255), "[" .. ALT_NAME .. "] You did not beat your Personal Record (+" .. FormatRecord(' .. time - personalRecord .. ') .. ")")')
 				end
 
-				tempCache[steamID].timer_start = 0
+				playerCache[steamID].timerStart = 0
 
-				UpdateTempCache()
+				NetworkPlayerCache()
 			end
 		end
 	end

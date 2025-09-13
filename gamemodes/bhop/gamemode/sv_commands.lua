@@ -1,12 +1,12 @@
-local function ChangeStyle(ply, newStyle)
+function ChangeStyle(ply, style)
 	local steamID = ply:SteamID64()
 
-	if tempCache[steamID].style ~= newStyle then
+	if playerCache[steamID].style ~= style then
 		ply:Spawn()
 
-		tempCache[steamID].style = newStyle
+		playerCache[steamID].style = style
 
-		UpdateTempCache()
+		NetworkPlayerCache()
 	end
 end
 
@@ -17,13 +17,6 @@ local function UpdateZone(pos2, zone)
 	local pos = Vector((ent.pos1.x + pos2.x) / 2, (ent.pos1.y + pos2.y) / 2, (ent.pos1.z + pos2.z) / 2)
 
 	local size = Vector(math.abs(pos2.x - ent.pos1.x), math.abs(pos2.y - ent.pos1.y), math.abs(pos2.z - ent.pos1.z))
-
-	WriteToCache(mapCache, pos.x, zone .. "_x")
-	WriteToCache(mapCache, pos.y, zone .. "_y")
-	WriteToCache(mapCache, pos.z, zone .. "_z")
-	WriteToCache(mapCache, size.x, zone .. "_l")
-	WriteToCache(mapCache, size.y, zone .. "_w")
-	WriteToCache(mapCache, size.z, zone .. "_h")
 
 	ent:SetPos(pos)
 	ent.size = size
@@ -40,9 +33,9 @@ function GM:PlayerSay(sender, text, teamChat)
 	elseif text == "restart" or text == "r" then
 		sender:Spawn()
 
-		tempCache[sender:SteamID64()].timer_start = 0
+		playerCache[sender:SteamID64()].timerStart = 0
 
-		UpdateTempCache()
+		NetworkPlayerCache()
 	elseif text == "usp" then
 		sender:Give("weapon_usp")
 	elseif text == "glock" then
@@ -72,12 +65,6 @@ function GM:PlayerSay(sender, text, teamChat)
 			sender:Spawn()
 			sender:SpectateEntity(team.GetPlayers(TEAM_PLAYER)[1])
 		end
-	elseif string.StartsWith(text, "tier ") then
-		if (roleCache[sender:SteamID64()] or ROLE_USER) == ROLE_ADMIN then
-			mapCache.tier = string.sub(text, 6)
-
-			UpdateMapCache()
-		end
 	elseif string.StartsWith(text, "map ") then
 		if (roleCache[sender:SteamID64()] or ROLE_USER) == ROLE_ADMIN then
 			ChangeLevel(string.sub(text, 5))
@@ -103,5 +90,4 @@ function GM:PlayerSay(sender, text, teamChat)
 	end
 
 	return ""
-
 end

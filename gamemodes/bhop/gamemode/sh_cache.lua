@@ -57,13 +57,12 @@ IN_ATTACK = IN_ATTACK
 IN_ATTACK2 = IN_ATTACK2
 IN_JUMP = IN_JUMP
 
-tempCache = {} --stores timer_start and style to [steam_id]
-mapCache = {} --stores tier, start zone, and end zone
-recordsCache = {} --stores name and time to [steam_id]
+playerCache = {} --stores timerStart and style to [steam_id], networked
+recordsCache = {} --stores name and time to [steam_id], networked
 replayCache = {} --stores replay to [steam_id], not networked
 roleCache = {} --stores role to [steam_id], not networked
 
-function ReadFromCache(cache, fallBack, ...) -- ... represents an infinite number of nested indices, you can index the cache for as many nested indices as the cache table has
+function ReadFromCache(cache, fallBack, ...) -- ... represents an infinite number of nested keys, you can index the table for as many nested keys as the table has
 	for _, v in ipairs({...}) do
 		if cache[v] then
 			cache = cache[v]

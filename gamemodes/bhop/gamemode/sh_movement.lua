@@ -1,9 +1,10 @@
 function GM:SetupMove(ply, mv, cmd)
 	local steamID = ply:SteamID64()
-
+	local style = playerCache[steamID].style
+	
 	if SERVER then
-		if not ply:IsBot() then			--record replays
-			if tempCache[steamID].timer_start > 0 then
+		if not ply:IsBot() then										--record replays
+			if playerCache[steamID].timerStart > 0 then
 				local pos, ang = mv:GetOrigin(), mv:GetAngles()
 
 				ply.replayCache[ply.replayMV] = {x = pos.x, y = pos.y, z = pos.z, pitch = ang.p, yaw = ang.y}
@@ -19,13 +20,13 @@ function GM:SetupMove(ply, mv, cmd)
 				ply.replayMV = 1
 			end
 
-			local mvTable = replayCache[tempCache[steamID].style] or nil
+			local mvTable = replayCache[style] or nil
 
 			if mvTable then
 				if ply.replayMV == 1 then
-					tempCache[steamID].timer_start = CurTime()
+					playerCache[steamID].timerStart = CurTime()
 
-					UpdateTempCache()
+					NetworkPlayerCache()
 				end
 
 				mv:SetOrigin(Vector(mvTable[ply.replayMV].x, mvTable[ply.replayMV].y, mvTable[ply.replayMV].z))
@@ -34,9 +35,9 @@ function GM:SetupMove(ply, mv, cmd)
 				ply.replayMV = ply.replayMV + 1
 
 				if ply.replayMV > #mvTable then
-					tempCache[steamID].timer_start = 0
+					playerCache[steamID].timerStart = 0
 
-					UpdateTempCache()
+					NetworkPlayerCache()
 
 					ply.replayMV = 1
 				end
@@ -47,7 +48,6 @@ function GM:SetupMove(ply, mv, cmd)
 	if ply:GetMoveType() ~= MOVETYPE_WALK then return end
 
 	local onGround = ply:OnGround()
-	local style = tempCache[steamID].style
 
 	--autohop by FiBzY to be crouch boost fix compatible
 	if style ~= STYLE_MANUAL and cmd:KeyDown(IN_JUMP) and onGround and ply:WaterLevel() < 2 then
@@ -87,7 +87,7 @@ local AIR_ACCEL = 500
 function GM:Move(ply, mv)
 	if ply:OnGround() or ply:Team() == TEAM_SPECTATOR then return end
 
-	local style = tempCache[ply:SteamID64()].style
+	local style = playerCache[ply:SteamID64()].style
 	local vel, ang = mv:GetVelocity(), mv:GetMoveAngles()
 	local forward, right = ang:Forward(), ang:Right()
 	local fSpeed, sSpeed = mv:GetForwardSpeed(), mv:GetSideSpeed()
