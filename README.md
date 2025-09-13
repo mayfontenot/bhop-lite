@@ -1,6 +1,7 @@
 # bhop-lite
 A lightweight Bunny Hop gamemode for Garry's Mod<br/>
-Features a database to memory caching system, SQLite, minimal network traffic, and optimized code for maximum performance.<br/>
+Unique features: a database to memory caching system, SQLite, minimal network traffic, and optimized code for maximum performance.<br/>
+Additional features: Doors fix, tele fix, backdoors fix, breakables fix
 Made by Mei and FiBzY<br/>
 WORK IN PROGRESS, changelevel and ranks system yet to be implemented<br/>
 
