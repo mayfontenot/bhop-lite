@@ -1,3 +1,5 @@
+util.AddNetworkString("replayStyle")
+
 function ChangeStyle(ply, style)
 	local steamID = ply:SteamID64()
 
@@ -9,6 +11,22 @@ function ChangeStyle(ply, style)
 		NetworkPlayerCache()
 	end
 end
+
+net.Receive("replayStyle", function(len, ply)
+	local newStyle = net.ReadString()
+	local bot = team.GetPlayers(TEAM_PLAYER)[1]
+	local steamID = bot:SteamID64()
+	local style = playerCache[steamID].style
+
+	bot.lastStyleChange = bot.lastStyleChange or 0
+
+	if style ~= newStyle and CurTime() > bot.lastStyleChange + 30 then
+		bot.lastStyleChange = CurTime()
+		bot.replayMV = 1
+
+		ChangeStyle(bot, newStyle)
+	end
+end)
 
 local function UpdateZone(pos2, zone)
 	local ent = zone == "start" and startZone or endZone

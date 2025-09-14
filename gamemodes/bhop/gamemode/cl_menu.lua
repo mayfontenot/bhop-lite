@@ -85,7 +85,7 @@ concommand.Add("bhoplite_menu", function(ply, cmd, args)
 
 	menuDrawn = true
 
-	--[[local frame = vgui.Create("DFrame")
+	local frame = vgui.Create("DFrame")
 	frame:SetSize(MENU_WIDTH, MENU_HEIGHT)
 	frame:Center()
 	frame:SetTitle(ALT_NAME .. " menu")
@@ -146,7 +146,6 @@ concommand.Add("bhoplite_menu", function(ply, cmd, args)
 	commandsPanel:AddLine("wonly or w", "changes your style to W-only")
 	commandsPanel:AddLine("aonly or a", "changes your style to A-only")
 	commandsPanel:AddLine("spectate or spec", "enter/exit the spectator team")
-	commandsPanel:AddLine("tier <tier>", "Changes the map's tier. Admin only.")
 	commandsPanel:AddLine("map <map>", "Save and changelevel. Admin only.")
 	commandsPanel:AddLine("start pos1", "Create or modify start pos1 to your foot position. Admin only.")
 	commandsPanel:AddLine("start pos2", "Create or modify start pos2 to your eye position. Admin only.")
@@ -155,14 +154,14 @@ concommand.Add("bhoplite_menu", function(ply, cmd, args)
 	UpdatePanel(commandsPanel)
 
 	local personalRecordsPanel = AddPanel("PR", "DListView", frame)
+	personalRecordsPanel:AddColumn("Style")
 	personalRecordsPanel:AddColumn("SteamID")
 	personalRecordsPanel:AddColumn("Name")
-	personalRecordsPanel:AddColumn("Style")
 	personalRecordsPanel:AddColumn("Time")
-	for steamID, v in pairs(personalRecordsCache) do
-		for style, time in pairs(v) do
-			if style ~= "name" then
-				personalRecordsPanel:AddLine(steamID, v["name"], style, FormatRecord(time) .. " s")
+	for style, record in pairs(recordsCache) do
+		for steamID, v in pairs(record) do
+			if steamID ~= 1 then
+				personalRecordsPanel:AddLine(style, steamID, v.name, FormatRecord(v.time))
 			end
 		end
 	end
@@ -170,38 +169,35 @@ concommand.Add("bhoplite_menu", function(ply, cmd, args)
 
 	local worldRecordsIndex = 1
 	local worldRecordsPanel = AddPanel("WR", "DScrollPanel", frame)
-	for style, v in pairs(worldRecordsCache) do
-		local label = vgui.Create("DLabel", worldRecordsPanel)
-		label:SetWide(MENU_HEIGHT - 48)
-		label:SetPos(8, 8 + 40 * (worldRecordsIndex - 1))
-		label:SetTextColor(Color(255, 255, 255))
-		label:SetText(v["steamID"] .. " " .. v["name"] .. " " .. style .. " " .. FormatRecord(v["time"]) .. " s")
+	for style, record in pairs(recordsCache) do
+		for steamID, v in pairs(record) do
+			if steamID == 1 then
+				local label = vgui.Create("DLabel", worldRecordsPanel)
+				label:SetWide(MENU_HEIGHT - 48)
+				label:SetPos(8, 8 + 40 * (worldRecordsIndex - 1))
+				label:SetTextColor(Color(255, 255, 255))
+				label:SetText(style .. " " .. steamID .. " " .. v.name .. " " .. FormatRecord(v.time))
 
-		local buttonReplay = vgui.Create("DButton", worldRecordsPanel)
-		buttonReplay:SetSize(64, 32)
-		buttonReplay:SetPos(worldRecordsPanel:GetWide() - 144, 8 + 40 * (worldRecordsIndex - 1))
-		buttonReplay:SetTextColor(Color(255, 255, 255))
-		buttonReplay:SetText("Replay")
-		buttonReplay.DoClick = function()
-			net.Start("replayStyle")
-			net.WriteString(style)
-			net.SendToServer()
+				local buttonReplay = vgui.Create("DButton", worldRecordsPanel)
+				buttonReplay:SetSize(64, 32)
+				buttonReplay:SetPos(worldRecordsPanel:GetWide() - 144, 8 + 40 * (worldRecordsIndex - 1))
+				buttonReplay:SetTextColor(Color(255, 255, 255))
+				buttonReplay:SetText("Replay")
+				buttonReplay.DoClick = function()
+					net.Start("replayStyle")
+						net.WriteString(style)
+					net.SendToServer()
+				end
+
+				function buttonReplay:Paint(w, h)
+					surface.SetDrawColor(255, 255, 255)
+					surface.DrawOutlinedRect(0, 0, w, h)
+				end
+
+				worldRecordsIndex = worldRecordsIndex + 1
+			end
 		end
-
-		function buttonReplay:Paint(w, h)
-			surface.SetDrawColor(255, 255, 255)
-			surface.DrawOutlinedRect(0, 0, w, h)
-		end
-
-		worldRecordsIndex = worldRecordsIndex + 1
 	end
-
-	local mapsPanel = AddPanel("Maps", "DListView", frame)
-	mapsPanel:AddColumn("Name")
-	for _, v in pairs(mapsCache) do
-		mapsPanel:AddLine(v)
-	end
-	UpdatePanel(mapsPanel)
 
 	local playersPanel = AddPanel("Players", "DScrollPanel", frame)
 	local players = player.GetHumans()
@@ -241,5 +237,5 @@ concommand.Add("bhoplite_menu", function(ply, cmd, args)
 			surface.SetDrawColor(255, 255, 255)
 			surface.DrawOutlinedRect(0, 0, w, h)
 		end
-	end]]
+	end
 end)

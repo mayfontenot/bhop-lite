@@ -83,6 +83,7 @@ end
 
 function GM:PlayerInitialSpawn(ply)
 	ply:SetModel(MODELS[math.random(#MODELS)])
+	ply:DrawShadow(false)
 	ply:SetTeam(TEAM_PLAYER)
 
 	playerCache[ply:SteamID64()] = {style = STYLE_AUTO, timerStart = 0}

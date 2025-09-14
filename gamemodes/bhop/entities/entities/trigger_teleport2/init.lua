@@ -29,10 +29,12 @@ function ENT:EndTouch(ent)
 
 	if destination then
 		if ent:IsPlayer() then
-			local vel = MaxVector(ent.velStack)
-			vel:Rotate(Angle(0, destination:GetAngles().y - vel:Angle().y, 0))
+			if not ent:IsBot() then
+				local vel = MaxVector(ent.velStack)
+				vel:Rotate(Angle(0, destination:GetAngles().y - vel:Angle().y, 0))
 
-			ent:SetVelocity(vel - ent:GetVelocity())
+				ent:SetVelocity(vel - ent:GetVelocity())
+			end
 		else
 			local vel = ent:GetVelocity()
 			vel:Rotate(Angle(0, destination:GetAngles().y - vel:Angle().y, 0))

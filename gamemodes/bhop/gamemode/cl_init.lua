@@ -24,7 +24,7 @@ function GM:CalcView(ply, origin, angles, fov, znear, zfar)     --view punch and
     return {origin = origin, angles = angles, fov = GetConVar("fov_desired"):GetFloat(), znear = znear, sfar = zfar}
 end
 
-function GM:PrePlayerDraw(ply)		--do not draw players, spectators, or bots
+function GM:PrePlayerDraw(ply, flags)		--do not draw players, spectators, or bots
 	return not GetConVar("bhoplite_draw_players"):GetBool()
 end
 
