@@ -50,8 +50,14 @@ function GM:InitPostEntity()
 		v:Fire("Break")
 	end
 
-	for _, v in pairs(ents.FindByClass("trigger_teleport")) do 				--tele fix
-		v:Fire("AddOutput", "OnEndTouch !activator:Teleported")
+	for _, v in pairs(ents.FindByClass("trigger_teleport")) do 	--part of telehop fix
+		local ent = ents.Create("trigger_teleport2")
+		ent:SetPos(v:GetPos())
+		ent:SetAngles(v:GetAngles())
+		ent.boundsMin = v:GetCollisionBounds()
+		ent.boundsMax = select(2, v:GetCollisionBounds())
+		ent:SetKeyValue("target", v:GetInternalVariable("target"))
+		ent:Spawn()
 	end
 
 	spawns = ents.FindByClass("info_player_start")			--find valid player spawns
@@ -69,14 +75,6 @@ end
 
 function GM:AcceptInput(ent, input, activator, caller, value)
 	if (ent:GetClass() == "func_door" and input == "Close") or ent:GetClass() == "lua_run" then return true end --doors and backdoor fix
-
-	if input == "Teleported" and IsValid(activator) then			--tele fix
-		if activator:IsPlayer() then
-			playerCache[activator:SteamID64()].destinationAng = ents.FindByName(caller:GetInternalVariable("target"))[1]:GetAngles()
-
-			NetworkPlayerCache(activator)
-		end
-	end
 end
 
 function GM:PlayerSelectSpawn(ply, transition)
@@ -87,7 +85,7 @@ function GM:PlayerInitialSpawn(ply)
 	ply:SetModel(MODELS[math.random(#MODELS)])
 	ply:SetTeam(TEAM_PLAYER)
 
-	playerCache[ply:SteamID64()] = {style = STYLE_AUTO, timerStart = 0, destinationAng = nil}
+	playerCache[ply:SteamID64()] = {style = STYLE_AUTO, timerStart = 0}
 
 	NetworkPlayerCache(ply) --here we only send cache to the player that connected instead of broadcasting to all players, because other players have these caches already
 	NetworkRecordsCache(ply)

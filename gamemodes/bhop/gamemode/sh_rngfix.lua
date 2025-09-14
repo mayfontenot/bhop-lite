@@ -146,6 +146,7 @@ end
     - rngfix slope detection uses this to simulate the next trace movement
     - if skiped uphill turns on slopes will randomly ignore your strafe acceleration causing stickiness or dropped speed inconsistently
 ]]
+
 local AIR_ACCEL = 500
 
 function PredictVelocity(ply, mv, cmd)
