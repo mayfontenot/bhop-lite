@@ -48,6 +48,7 @@ function ENT:StartTouch(ent)
 					ent:SendLua('chat.AddText(Color(151, 211, 255), "[" .. ALT_NAME .. "] You did not beat your Personal Record (+" .. FormatRecord(' .. time - personalRecord .. ') .. ")")')
 				end
 
+				ent.replayCache = {}
 				playerCache[steamID].timerStart = 0
 
 				NetworkPlayerCache()

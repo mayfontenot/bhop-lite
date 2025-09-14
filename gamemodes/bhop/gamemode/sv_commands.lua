@@ -51,6 +51,7 @@ function GM:PlayerSay(sender, text, teamChat)
 	elseif text == "restart" or text == "r" then
 		sender:Spawn()
 
+		sender.replayCache = {}
 		playerCache[sender:SteamID64()].timerStart = 0
 
 		NetworkPlayerCache()

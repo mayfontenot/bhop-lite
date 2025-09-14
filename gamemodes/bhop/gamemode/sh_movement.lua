@@ -14,14 +14,14 @@ function GM:SetupMove(ply, mv, cmd)
 				table.remove(ply.velStack, 1)
 			end
 
-			if playerCache[steamID].timerStart > 0 then				--record replays
-				local pos, ang = mv:GetOrigin(), mv:GetAngles()
+			ply.replayCache = ply.replayCache or {}				--record replays
 
-				ply.replayCache[ply.replayMV] = {x = pos.x, y = pos.y, z = pos.z, pitch = ang.p, yaw = ang.y, buttons = mv:GetButtons()}
-				ply.replayMV = ply.replayMV + 1
-			else
-				ply.replayCache = {}
-				ply.replayMV = 1
+			local pos, ang = mv:GetOrigin(), mv:GetAngles()
+
+			table.insert(ply.replayCache, {x = pos.x, y = pos.y, z = pos.z, pitch = ang.p, yaw = ang.y, buttons = mv:GetButtons()})
+
+			if playerCache[steamID].timerStart == 0 and #ply.replayCache > 200 then
+				table.move(ply.replayCache, #ply.replayCache - 200, #ply.replayCache, 1)
 			end
 		elseif ply:IsBot() then						--play replay
 			if not ply.replayMV then
