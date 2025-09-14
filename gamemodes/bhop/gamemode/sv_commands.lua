@@ -57,12 +57,12 @@ function GM:PlayerSay(sender, text, teamChat)
 	elseif text == "spectate" or text == "spec" then
 		if sender:Team() == TEAM_SPECTATOR then
 			sender:SetTeam(TEAM_PLAYER)
-			sender:UnSpectate()
 			sender:Spawn()
+			sender:UnSpectate()
 		else
 			sender:SetTeam(TEAM_SPECTATOR)
-			sender:Spectate(OBS_MODE_IN_EYE)
 			sender:Spawn()
+			sender:Spectate(OBS_MODE_IN_EYE)
 			sender:SpectateEntity(team.GetPlayers(TEAM_PLAYER)[1])
 		end
 	elseif string.StartsWith(text, "map ") then

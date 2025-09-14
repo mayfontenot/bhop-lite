@@ -40,7 +40,7 @@ function GM:InitPostEntity()
 
 	ReadCacheFromDB()
 
-	for _, v in pairs(ents.FindByClass("func_door")) do 		--doors fix
+	for _, v in pairs(ents.FindByClass("func_door")) do 		--part of doors fix
 		v:Fire("Open")
 		v:Fire("Lock")
 		v:SetKeyValue("locked_sound", 0)
@@ -54,9 +54,9 @@ function GM:InitPostEntity()
 		local ent = ents.Create("trigger_teleport2")
 		ent:SetPos(v:GetPos())
 		ent:SetAngles(v:GetAngles())
+		ent:SetKeyValue("target", v:GetInternalVariable("target"))
 		ent.boundsMin = v:GetCollisionBounds()
 		ent.boundsMax = select(2, v:GetCollisionBounds())
-		ent:SetKeyValue("target", v:GetInternalVariable("target"))
 		ent:Spawn()
 	end
 
@@ -74,7 +74,7 @@ function GM:InitPostEntity()
 end
 
 function GM:AcceptInput(ent, input, activator, caller, value)
-	if (ent:GetClass() == "func_door" and input == "Close") or ent:GetClass() == "lua_run" then return true end --doors and backdoor fix
+	if (ent:GetClass() == "func_door" and input == "Close") or ent:GetClass() == "lua_run" then return true end --part of doors fix, and lua_run backdoor fix
 end
 
 function GM:PlayerSelectSpawn(ply, transition)
