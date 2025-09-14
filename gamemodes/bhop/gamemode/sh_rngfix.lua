@@ -150,7 +150,8 @@ local AIR_ACCEL = 500
 
 function PredictVelocity(ply, mv, cmd)
 	local style = playerCache[ply:SteamID64()].style
-	local vel, ang = mv:GetVelocity(), mv:GetMoveAngles()
+	local vel = mv:GetVelocity()
+	local ang = mv:GetMoveAngles()
 	local forward, right = ang:Forward(), ang:Right()
 	local fSpeed, sSpeed = mv:GetForwardSpeed(), mv:GetSideSpeed()
 	local maxSpeed = mv:GetMaxSpeed()

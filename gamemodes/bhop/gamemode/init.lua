@@ -51,7 +51,7 @@ function GM:InitPostEntity()
 	end
 
 	for _, v in pairs(ents.FindByClass("trigger_teleport")) do 				--tele fix
-		v:Fire("AddOutput", "OnEndTouch !activator:teleported:0:0:-1")
+		v:Fire("AddOutput", "OnEndTouch !activator:Teleported")
 	end
 
 	spawns = ents.FindByClass("info_player_start")			--find valid player spawns
@@ -70,7 +70,7 @@ end
 function GM:AcceptInput(ent, input, activator, caller, value)
 	if (ent:GetClass() == "func_door" and input == "Close") or ent:GetClass() == "lua_run" then return true end --doors and backdoor fix
 
-	if input == "teleported" and IsValid(activator) then			--tele fix
+	if input == "Teleported" and IsValid(activator) then			--tele fix
 		if activator:IsPlayer() then
 			playerCache[activator:SteamID64()].teleported = true
 		end
