@@ -73,6 +73,8 @@ function GM:AcceptInput(ent, input, activator, caller, value)
 	if input == "Teleported" and IsValid(activator) then			--tele fix
 		if activator:IsPlayer() then
 			playerCache[activator:SteamID64()].teleported = true
+
+			NetworkPlayerCache(activator)
 		end
 	end
 end

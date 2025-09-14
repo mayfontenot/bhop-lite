@@ -3,8 +3,9 @@ function GM:SetupMove(ply, mv, cmd)
 	local style = playerCache[steamID].style
 
 	if playerCache[steamID].teleported then						--tele fix
-		local vel = mv:GetVelocity()
-		vel:Rotate(Angle(0, vel:Angle().y - mv:GetAngles().y, 0))
+		local vel = ply:GetAbsVelocity()
+		local delta = vel:Angle().y > mv:GetAngles().y and vel:Angle().y - mv:GetAngles().y or mv:GetAngles().y - vel:Angle().y
+		vel:Rotate(Angle(0, delta, 0))
 
 		mv:SetVelocity(vel)
 
