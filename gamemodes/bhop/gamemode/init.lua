@@ -72,7 +72,7 @@ function GM:AcceptInput(ent, input, activator, caller, value)
 
 	if input == "Teleported" and IsValid(activator) then			--tele fix
 		if activator:IsPlayer() then
-			playerCache[activator:SteamID64()].teleported = true
+			playerCache[activator:SteamID64()].destinationAng = ents.FindByName(caller:GetInternalVariable("target"))[1]:GetAngles()
 
 			NetworkPlayerCache(activator)
 		end
@@ -87,7 +87,7 @@ function GM:PlayerInitialSpawn(ply)
 	ply:SetModel(MODELS[math.random(#MODELS)])
 	ply:SetTeam(TEAM_PLAYER)
 
-	playerCache[ply:SteamID64()] = {style = STYLE_AUTO, timerStart = 0, teleported = false}
+	playerCache[ply:SteamID64()] = {style = STYLE_AUTO, timerStart = 0, destinationAng = nil}
 
 	NetworkPlayerCache(ply) --here we only send cache to the player that connected instead of broadcasting to all players, because other players have these caches already
 	NetworkRecordsCache(ply)

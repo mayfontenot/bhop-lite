@@ -2,16 +2,6 @@ function GM:SetupMove(ply, mv, cmd)
 	local steamID = ply:SteamID64()
 	local style = playerCache[steamID].style
 
-	if playerCache[steamID].teleported then						--tele fix
-		local vel = ply:GetAbsVelocity()
-		local delta = vel:Angle().y > mv:GetAngles().y and vel:Angle().y - mv:GetAngles().y or mv:GetAngles().y - vel:Angle().y
-		vel:Rotate(Angle(0, delta, 0))
-
-		mv:SetVelocity(vel)
-
-		playerCache[steamID].teleported = false
-	end
-
 	if SERVER then
 		if not ply:IsBot() then										--record replays
 			if playerCache[steamID].timerStart > 0 then
@@ -92,12 +82,48 @@ function GM:SetupMove(ply, mv, cmd)
 	end
 end
 
+local function MaxVector(tbl)
+	local max = tbl[1]
+
+	for _, v in pairs(tbl) do
+		if v:Length2DSqr() > max:Length2DSqr() then
+			max = v
+		end
+	end
+
+	return max
+end
+
 local AIR_ACCEL = 500
 
 function GM:Move(ply, mv)
+	local steamID = ply:SteamID64()
+
+	if not ply.velStack then
+		ply.velStack = {}
+	end
+
+	local destinationAng = playerCache[steamID].destinationAng
+
+	if destinationAng then						--tele fix
+		local vel = MaxVector(ply.velStack)
+		local delta = destinationAng.y - vel:Angle().y
+
+		vel:Rotate(Angle(0, delta, 0))
+		mv:SetVelocity(vel)
+
+		playerCache[steamID].destinationAng = nil
+	else
+		table.insert(ply.velStack, mv:GetVelocity())
+
+		if #ply.velStack > 20 then
+			table.remove(ply.velStack, 1)
+		end
+	end
+
 	if ply:OnGround() or ply:Team() == TEAM_SPECTATOR then return end
 
-	local style = playerCache[ply:SteamID64()].style
+	local style = playerCache[steamID].style
 	local vel, ang = mv:GetVelocity(), mv:GetMoveAngles()
 	local forward, right = ang:Forward(), ang:Right()
 	local fSpeed, sSpeed = mv:GetForwardSpeed(), mv:GetSideSpeed()
