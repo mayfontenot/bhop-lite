@@ -20,7 +20,7 @@ function WriteCacheToDB()
 		sql.QueryTyped("DELETE FROM replays WHERE map = ? AND style = ?", map, style)
 
 		for frame, v in pairs(frames) do
-			sql.QueryTyped("INSERT OR REPLACE INTO replays (map, style, frame, x, y, z, pitch, yaw) VALUES (?, ?, ?, ?, ?, ?, ?, ?)", map, style, frame, v.x, v.y, v.z, v.pitch, v.yaw)
+			sql.QueryTyped("INSERT OR REPLACE INTO replays (map, style, frame, x, y, z, pitch, yaw, buttons) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)", map, style, frame, v.x, v.y, v.z, v.pitch, v.yaw, v.buttons)
 		end
 	end
 
@@ -32,7 +32,7 @@ end
 function ReadCacheFromDB()
 	sql.QueryTyped("CREATE TABLE IF NOT EXISTS maps (map TEXT PRIMARY KEY, start_x REAL, start_y REAL, start_z REAL, start_l REAL, start_w REAL, start_h REAL, end_x REAL, end_y REAL, end_z REAL, end_l REAL, end_w REAL, end_h REAL)")
 	sql.QueryTyped("CREATE TABLE IF NOT EXISTS records (map TEXT, style TEXT, steam_id INTEGER, name TEXT, time REAL, PRIMARY KEY (map, style, steam_id))")
-	sql.QueryTyped("CREATE TABLE IF NOT EXISTS replays (map TEXT, style TEXT, frame INTEGER, x REAL, y REAL, z REAL, pitch REAL, yaw REAL, PRIMARY KEY (map, style, frame))")
+	sql.QueryTyped("CREATE TABLE IF NOT EXISTS replays (map TEXT, style TEXT, frame INTEGER, x REAL, y REAL, z REAL, pitch REAL, yaw REAL, buttons INTEGER, PRIMARY KEY (map, style, frame))")
 	sql.QueryTyped("CREATE TABLE IF NOT EXISTS roles (steam_id INTEGER PRIMARY KEY, role TEXT)")
 	sql.QueryTyped("INSERT OR IGNORE INTO roles (steam_id, role) VALUES (?, ?)", OWNER_STEAM_ID_64, ROLE_ADMIN)
 
@@ -64,7 +64,7 @@ function ReadCacheFromDB()
 	local tempReplayCache = sql.QueryTyped("SELECT * FROM replays WHERE map = ?", map)
 	if tempReplayCache then
 		for _, v in pairs(tempReplayCache) do
-			WriteToCache(replayCache, {x = v.x, y = v.y, z = v.z, pitch = v.pitch, yaw = v.yaw}, v.style, v.frame)
+			WriteToCache(replayCache, {x = v.x, y = v.y, z = v.z, pitch = v.pitch, yaw = v.yaw, buttons = v.buttons}, v.style, v.frame)
 		end
 	end
 

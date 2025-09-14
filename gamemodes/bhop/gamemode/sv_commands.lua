@@ -1,4 +1,4 @@
-util.AddNetworkString("replayStyle")
+util.AddNetworkString("replayStyleMessage")
 
 function ChangeStyle(ply, style)
 	local steamID = ply:SteamID64()
@@ -12,7 +12,7 @@ function ChangeStyle(ply, style)
 	end
 end
 
-net.Receive("replayStyle", function(len, ply)
+net.Receive("replayStyleMessage", function(len, ply)
 	local newStyle = net.ReadString()
 	local bot = team.GetPlayers(TEAM_PLAYER)[1]
 	local steamID = bot:SteamID64()

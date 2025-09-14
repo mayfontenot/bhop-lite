@@ -184,7 +184,7 @@ concommand.Add("bhoplite_menu", function(ply, cmd, args)
 				buttonReplay:SetTextColor(Color(255, 255, 255))
 				buttonReplay:SetText("Replay")
 				buttonReplay.DoClick = function()
-					net.Start("replayStyle")
+					net.Start("replayStyleMessage")
 						net.WriteString(style)
 					net.SendToServer()
 				end

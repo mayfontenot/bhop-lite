@@ -17,7 +17,7 @@ function GM:SetupMove(ply, mv, cmd)
 			if playerCache[steamID].timerStart > 0 then				--record replays
 				local pos, ang = mv:GetOrigin(), mv:GetAngles()
 
-				ply.replayCache[ply.replayMV] = {x = pos.x, y = pos.y, z = pos.z, pitch = ang.p, yaw = ang.y}
+				ply.replayCache[ply.replayMV] = {x = pos.x, y = pos.y, z = pos.z, pitch = ang.p, yaw = ang.y, buttons = mv:GetButtons()}
 				ply.replayMV = ply.replayMV + 1
 			else
 				ply.replayCache = {}
@@ -39,6 +39,7 @@ function GM:SetupMove(ply, mv, cmd)
 					NetworkPlayerCache()
 				end
 
+				mv:SetButtons(mvTable[ply.replayMV].buttons)
 				mv:SetOrigin(Vector(mvTable[ply.replayMV].x, mvTable[ply.replayMV].y, mvTable[ply.replayMV].z))
 				ply:SetEyeAngles(Angle(mvTable[ply.replayMV].pitch, mvTable[ply.replayMV].yaw, 0))
 
