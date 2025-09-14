@@ -20,8 +20,8 @@ function GM:SetupMove(ply, mv, cmd)
 
 			table.insert(ply.replayCache, {x = pos.x, y = pos.y, z = pos.z, pitch = ang.p, yaw = ang.y, buttons = mv:GetButtons()})
 
-			if playerCache[steamID].timerStart == 0 and #ply.replayCache > 200 then
-				table.move(ply.replayCache, #ply.replayCache - 200, #ply.replayCache, 1)
+			if playerCache[steamID].timerStart == 0 and #ply.replayCache > 100 then
+				table.move(ply.replayCache, #ply.replayCache - 100, #ply.replayCache, 1)
 			end
 		elseif ply:IsBot() then						--play replay
 			if not ply.replayMV then
@@ -145,4 +145,5 @@ function GM:Move(ply, mv)
 	mv:SetVelocity(vel)
 
 	return false
+
 end
