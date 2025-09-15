@@ -145,5 +145,4 @@ function GM:Move(ply, mv)
 	mv:SetVelocity(vel)
 
 	return false
-
 end

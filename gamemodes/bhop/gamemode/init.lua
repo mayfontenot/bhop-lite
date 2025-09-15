@@ -88,7 +88,7 @@ function GM:PlayerInitialSpawn(ply)
 
 	playerCache[ply:SteamID64()] = {style = STYLE_AUTO, timerStart = 0}
 
-	NetworkPlayerCache() --here we only send cache to the player that connected instead of broadcasting to all players, because other players have these caches already
+	NetworkPlayerCache()
 	NetworkRecordsCache()
 
 	ply:SetNoCollideWithTeammates(true)
@@ -164,5 +164,4 @@ end
 
 function GM:AllowPlayerPickup(ply, ent)
 	return false
-
 end
