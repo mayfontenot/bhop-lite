@@ -37,7 +37,7 @@ local function AddPanel(name, class, parent)
 	button:SetSize(84, 50)
 	button:SetPos(8, 40 + #panels * 58)
 	button:SetText(name)
-	button:SetFont("ChatFont")
+	button:SetFont("HudHintTextLarge")
 	button:SetTextColor(Color(255, 255, 255))
 	button.DoClick = function()
 		for _, v in pairs(panels) do
@@ -61,7 +61,7 @@ function UpdatePanel(panel)
 	panel:SetMultiSelect(false)
 
 	for _, v in pairs(panel.Columns) do
-		v.Header:SetFont("ChatFont")
+		v.Header:SetFont("HudHintTextLarge")
 		v.Header:SetTextColor(Color(255, 255, 255))
 
 		function v.Header:Paint(w, h)
@@ -72,7 +72,7 @@ function UpdatePanel(panel)
 
 	for _, v in pairs(panel.Lines) do
 		for _, k in pairs(v.Columns) do
-			k:SetFont("ChatFont")
+			k:SetFont("HudHintTextLarge")
 			k:SetTextColor(Color(255, 255, 255))
 		end
 
@@ -123,7 +123,7 @@ concommand.Add("bhoplite_menu", function(ply, cmd, args)
 	end
 
 	function closeButton:Paint(w, h)
-		surface.SetFont("ChatFont")
+		surface.SetFont("HudHintTextLarge")
 
 		local textWidth, textHeight = surface.GetTextSize("X")
 
@@ -179,14 +179,14 @@ concommand.Add("bhoplite_menu", function(ply, cmd, args)
 				label:SetWide(MENU_HEIGHT - 48)
 				label:SetPos(8, 8 + 40 * (worldRecordsIndex - 1))
 				label:SetTextColor(Color(255, 255, 255))
-				label:SetFont("ChatFont")
+				label:SetFont("HudHintTextLarge")
 				label:SetText(style .. " " .. steamID .. " " .. v.name .. " " .. FormatRecord(v.time))
 
 				local buttonReplay = vgui.Create("DButton", worldRecordsPanel)
 				buttonReplay:SetSize(64, 32)
 				buttonReplay:SetPos(worldRecordsPanel:GetWide() - 144, 8 + 40 * (worldRecordsIndex - 1))
 				buttonReplay:SetTextColor(Color(255, 255, 255))
-				buttonReplay:SetFont("ChatFont")
+				buttonReplay:SetFont("HudHintTextLarge")
 				buttonReplay:SetText("Replay")
 				buttonReplay.DoClick = function()
 					net.Start("replayStyleMessage")
@@ -212,14 +212,14 @@ concommand.Add("bhoplite_menu", function(ply, cmd, args)
 		label:SetWide(MENU_HEIGHT - 48)
 		label:SetPos(8, 8 + 40 * (k - 1))
 		label:SetTextColor(Color(255, 255, 255))
-		label:SetFont("ChatFont")
+		label:SetFont("HudHintTextLarge")
 		label:SetText(v:SteamID64() .. " " .. v:Name())
 
 		local buttonProfile = vgui.Create("DButton", playersPanel)
 		buttonProfile:SetSize(64, 32)
 		buttonProfile:SetPos(playersPanel:GetWide() - 144, 8 + 40 * (k - 1))
 		buttonProfile:SetTextColor(Color(255, 255, 255))
-		buttonProfile:SetFont("ChatFont")
+		buttonProfile:SetFont("HudHintTextLarge")
 		buttonProfile:SetText("Profile")
 		buttonProfile.DoClick = function()
 			v:ShowProfile()
@@ -234,7 +234,7 @@ concommand.Add("bhoplite_menu", function(ply, cmd, args)
 		buttonMute:SetSize(64, 32)
 		buttonMute:SetPos(playersPanel:GetWide() - 72, 8 + 40 * (k - 1))
 		buttonMute:SetTextColor(Color(255, 255, 255))
-		buttonMute:SetFont("ChatFont")
+		buttonMute:SetFont("HudHintTextLarge")
 		buttonMute:SetText((v:IsMuted() and "Unmute" or "Mute"))
 		buttonMute.DoClick = function()
 			v:SetMuted(not v:IsMuted())

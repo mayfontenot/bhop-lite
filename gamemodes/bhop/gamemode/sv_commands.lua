@@ -49,11 +49,10 @@ function GM:PlayerSay(sender, text, teamChat)
 	if text == "commands" or text == "help" then
 		sender:SendLua('chat.AddText(Color(151, 211, 255), "[" .. ALT_NAME .. "] Press F1 for a list of commands.")')
 	elseif text == "restart" or text == "r" then
-		sender:Spawn()
-
 		sender.replayCache = {}
 		playerCache[sender:SteamID64()].timerStart = 0
 
+		sender:Spawn()
 		NetworkPlayerCache()
 	elseif text == "usp" then
 		sender:Give("weapon_usp")
