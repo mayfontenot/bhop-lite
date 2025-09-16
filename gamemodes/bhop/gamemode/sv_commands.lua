@@ -79,6 +79,8 @@ function GM:PlayerSay(sender, text, teamChat)
 			sender:Spawn()
 			sender:UnSpectate()
 		else
+			sender.replayCache = {}
+
 			sender:SetTeam(TEAM_SPECTATOR)
 			sender:Spawn()
 			sender:Spectate(OBS_MODE_IN_EYE)
