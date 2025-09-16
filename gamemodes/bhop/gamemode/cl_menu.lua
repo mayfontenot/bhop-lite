@@ -1,42 +1,43 @@
-local MENU_WIDTH, MENU_HEIGHT = ScrH() / 2, ScrH() / 2
+local MENU_WIDTH, MENU_HEIGHT = ScrW() / 2, ScrH() / 2
 
 local panels = {}
 
 local function AddPanel(name, class, parent)
 	local panel = vgui.Create(class, parent)
-	panel:SetSize(MENU_WIDTH - 88, MENU_HEIGHT - 48)
-	panel:SetPos(80, 40)
+	panel:SetSize(MENU_WIDTH - 108, MENU_HEIGHT - 48)
+	panel:SetPos(100, 40)
 	panel:SetVisible((#panels == 0 and true or false))
 
 	function panel:Paint(w, h)
-		surface.SetDrawColor(255, 255, 255)
+		surface.SetDrawColor(37, 37, 37)
 		surface.DrawOutlinedRect(0, 0, w, h)
 	end
 
 	function panel.VBar:Paint(w, h)
-		surface.SetDrawColor(255, 255, 255)
+		surface.SetDrawColor(37, 37, 37)
 		surface.DrawOutlinedRect(0, 0, w, h)
 	end
 
 	function panel.VBar.btnUp:Paint(w, h)
-		surface.SetDrawColor(255, 255, 255)
+		surface.SetDrawColor(37, 37, 37)
 		surface.DrawOutlinedRect(0, 0, w, h)
 	end
 
 	function panel.VBar.btnDown:Paint(w, h)
-		surface.SetDrawColor(255, 255, 255)
+		surface.SetDrawColor(37, 37, 37)
 		surface.DrawOutlinedRect(0, 0, w, h)
 	end
 
 	function panel.VBar.btnGrip:Paint(w, h)
-		surface.SetDrawColor(255, 255, 255)
+		surface.SetDrawColor(37, 37, 37)
 		surface.DrawOutlinedRect(0, 0, w, h)
 	end
 
 	local button = vgui.Create("DButton", parent)
-	button:SetSize(64, 32)
-	button:SetPos(8, 40 + #panels * 40)
+	button:SetSize(84, 50)
+	button:SetPos(8, 40 + #panels * 58)
 	button:SetText(name)
+	button:SetFont("ChatFont")
 	button:SetTextColor(Color(255, 255, 255))
 	button.DoClick = function()
 		for _, v in pairs(panels) do
@@ -47,7 +48,7 @@ local function AddPanel(name, class, parent)
 	end
 
 	function button:Paint(w, h)
-		surface.SetDrawColor(255, 255, 255)
+		surface.SetDrawColor(37, 37, 37)
 		surface.DrawOutlinedRect(0, 0, w, h)
 	end
 
@@ -60,16 +61,18 @@ function UpdatePanel(panel)
 	panel:SetMultiSelect(false)
 
 	for _, v in pairs(panel.Columns) do
+		v.Header:SetFont("ChatFont")
 		v.Header:SetTextColor(Color(255, 255, 255))
 
 		function v.Header:Paint(w, h)
-			surface.SetDrawColor(255, 255, 255)
+			surface.SetDrawColor(37, 37, 37)
 			surface.DrawOutlinedRect(0, 0, w, h)
 		end
 	end
 
 	for _, v in pairs(panel.Lines) do
 		for _, k in pairs(v.Columns) do
+			k:SetFont("ChatFont")
 			k:SetTextColor(Color(255, 255, 255))
 		end
 
@@ -98,9 +101,9 @@ concommand.Add("bhoplite_menu", function(ply, cmd, args)
 	frame.lblTitle:SetFont("HudDefault")
 
 	function frame:Paint(w, h)
-		surface.SetDrawColor(0, 0, 0, 100)
+		surface.SetDrawColor(64, 64, 64)
 		surface.DrawRect(0, 0, w, h)
-		surface.SetDrawColor(255, 255, 255)
+		surface.SetDrawColor(37, 37, 37)
 		surface.DrawOutlinedRect(0, 0, w, h)
 	end
 
@@ -120,11 +123,11 @@ concommand.Add("bhoplite_menu", function(ply, cmd, args)
 	end
 
 	function closeButton:Paint(w, h)
-		surface.SetFont("CenterPrintText")
+		surface.SetFont("ChatFont")
 
 		local textWidth, textHeight = surface.GetTextSize("X")
 
-		surface.SetDrawColor(255, 255, 255)
+		surface.SetDrawColor(37, 37, 37)
 		surface.DrawOutlinedRect(0, 0, w, h)
 		surface.SetTextPos(w / 2 - textWidth / 2, h / 2 - textHeight / 2)
 		surface.DrawText("X")
@@ -132,7 +135,7 @@ concommand.Add("bhoplite_menu", function(ply, cmd, args)
 
 	panels = {}
 
-	local commandsPanel = AddPanel("Commands", "DListView", frame)
+	local commandsPanel = AddPanel("Cmds", "DListView", frame)
 	commandsPanel:AddColumn("Command")
 	commandsPanel:AddColumn("Description")
 	commandsPanel:AddLine("restart or r", "teleports you to the start zone")
@@ -153,7 +156,7 @@ concommand.Add("bhoplite_menu", function(ply, cmd, args)
 	commandsPanel:AddLine("end pos2", "Create or modify end pos2 to your eye position. Admin only.")
 	UpdatePanel(commandsPanel)
 
-	local personalRecordsPanel = AddPanel("PR", "DListView", frame)
+	local personalRecordsPanel = AddPanel("PRs", "DListView", frame)
 	personalRecordsPanel:AddColumn("Style")
 	personalRecordsPanel:AddColumn("SteamID")
 	personalRecordsPanel:AddColumn("Name")
@@ -168,7 +171,7 @@ concommand.Add("bhoplite_menu", function(ply, cmd, args)
 	UpdatePanel(personalRecordsPanel)
 
 	local worldRecordsIndex = 1
-	local worldRecordsPanel = AddPanel("WR", "DScrollPanel", frame)
+	local worldRecordsPanel = AddPanel("WRs", "DScrollPanel", frame)
 	for style, record in pairs(recordsCache) do
 		for steamID, v in pairs(record) do
 			if steamID == 1 then
@@ -176,12 +179,14 @@ concommand.Add("bhoplite_menu", function(ply, cmd, args)
 				label:SetWide(MENU_HEIGHT - 48)
 				label:SetPos(8, 8 + 40 * (worldRecordsIndex - 1))
 				label:SetTextColor(Color(255, 255, 255))
+				label:SetFont("ChatFont")
 				label:SetText(style .. " " .. steamID .. " " .. v.name .. " " .. FormatRecord(v.time))
 
 				local buttonReplay = vgui.Create("DButton", worldRecordsPanel)
 				buttonReplay:SetSize(64, 32)
 				buttonReplay:SetPos(worldRecordsPanel:GetWide() - 144, 8 + 40 * (worldRecordsIndex - 1))
 				buttonReplay:SetTextColor(Color(255, 255, 255))
+				buttonReplay:SetFont("ChatFont")
 				buttonReplay:SetText("Replay")
 				buttonReplay.DoClick = function()
 					net.Start("replayStyleMessage")
@@ -190,7 +195,7 @@ concommand.Add("bhoplite_menu", function(ply, cmd, args)
 				end
 
 				function buttonReplay:Paint(w, h)
-					surface.SetDrawColor(255, 255, 255)
+					surface.SetDrawColor(37, 37, 37)
 					surface.DrawOutlinedRect(0, 0, w, h)
 				end
 
@@ -207,19 +212,21 @@ concommand.Add("bhoplite_menu", function(ply, cmd, args)
 		label:SetWide(MENU_HEIGHT - 48)
 		label:SetPos(8, 8 + 40 * (k - 1))
 		label:SetTextColor(Color(255, 255, 255))
+		label:SetFont("ChatFont")
 		label:SetText(v:SteamID64() .. " " .. v:Name())
 
 		local buttonProfile = vgui.Create("DButton", playersPanel)
 		buttonProfile:SetSize(64, 32)
 		buttonProfile:SetPos(playersPanel:GetWide() - 144, 8 + 40 * (k - 1))
 		buttonProfile:SetTextColor(Color(255, 255, 255))
+		buttonProfile:SetFont("ChatFont")
 		buttonProfile:SetText("Profile")
 		buttonProfile.DoClick = function()
 			v:ShowProfile()
 		end
 
 		function buttonProfile:Paint(w, h)
-			surface.SetDrawColor(255, 255, 255)
+			surface.SetDrawColor(37, 37, 37)
 			surface.DrawOutlinedRect(0, 0, w, h)
 		end
 
@@ -227,6 +234,7 @@ concommand.Add("bhoplite_menu", function(ply, cmd, args)
 		buttonMute:SetSize(64, 32)
 		buttonMute:SetPos(playersPanel:GetWide() - 72, 8 + 40 * (k - 1))
 		buttonMute:SetTextColor(Color(255, 255, 255))
+		buttonMute:SetFont("ChatFont")
 		buttonMute:SetText((v:IsMuted() and "Unmute" or "Mute"))
 		buttonMute.DoClick = function()
 			v:SetMuted(not v:IsMuted())
@@ -234,7 +242,7 @@ concommand.Add("bhoplite_menu", function(ply, cmd, args)
 		end
 
 		function buttonMute:Paint(w, h)
-			surface.SetDrawColor(255, 255, 255)
+			surface.SetDrawColor(37, 37, 37)
 			surface.DrawOutlinedRect(0, 0, w, h)
 		end
 	end
