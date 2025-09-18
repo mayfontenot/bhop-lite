@@ -1,4 +1,4 @@
-function GM:KeyPress(ply, key)												--spectator target switch
+function GM:KeyPress(ply, key)									--spectator target switch
 	if ply:Team() == TEAM_SPECTATOR then
 		if key == IN_ATTACK or key == IN_ATTACK2 then
 			local players = team.GetPlayers(TEAM_PLAYER)
@@ -35,11 +35,11 @@ function GM:OnPlayerHitGround(ply, inWater, onFloater, speed)		--ssj counter
 	if ply.jumps > 1 and ply.jumps % 6 == 0 then
 		local vel = ply:GetVelocity():Length2D()
 
-		ply:SendLua('chat.AddText(Color(151, 211, 255), "[" .. ALT_NAME .. "] Jump ' .. ply.jumps .. ': " .. math.Round(' .. vel .. ') .. " u/s")')
+		ply:ChatPrint("[" .. ALT_NAME .. "] Jump " .. ply.jumps .. ": " .. math.Round(vel) .. " u/s")
 
 		for _, v in pairs(team.GetPlayers(TEAM_SPECTATOR)) do
 			if v:GetObserverTarget() == ply then
-				v:SendLua('chat.AddText(Color(151, 211, 255), "[" .. ALT_NAME .. "] Jump ' .. ply.jumps .. ': " .. math.Round(' .. vel .. ') .. " u/s")')
+				v:ChatPrint("[" .. ALT_NAME .. "] Jump " .. ply.jumps .. ": " .. math.Round(vel) .. " u/s")
 			end
 		end
 	end

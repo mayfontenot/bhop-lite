@@ -4,6 +4,7 @@ gamemodes\bhop\gamemode\sh_movement.lua
 gamemodes\bhop\gamemode\sh_rngfix.lua
 gamemodes\bhop\gamemode\cl_init.lua
 gamemodes\bhop\gamemode\cl_cache.lua
+gamemodes\bhop\gamemode\cl_network.lua
 gamemodes\bhop\gamemode\cl_hud.lua
 gamemodes\bhop\gamemode\cl_menu.lua
 gamemodes\bhop\entities\entities\zone_start\shared.lua
