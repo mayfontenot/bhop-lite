@@ -4,9 +4,7 @@ function GM:SetupMove(ply, mv, cmd)
 
 	if SERVER then
 		if not ply:IsBot() then
-			if not ply.velStack then						--part of telehop fix
-				ply.velStack = {}
-			end
+			ply.velStack = ply.velStack or {}								--part of telehop fix
 
 			table.insert(ply.velStack, mv:GetVelocity())
 

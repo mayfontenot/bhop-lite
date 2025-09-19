@@ -5,6 +5,7 @@ util.AddNetworkString("weaponMessage")
 util.AddNetworkString("spectateMessage")
 util.AddNetworkString("adminMapMessage")
 util.AddNetworkString("adminZoneMessage")
+util.AddNetworkString("adminDeleteRecordMessage")
 
 local function ChangeStyle(ply, style)
 	local steamID = ply:SteamID64()
@@ -116,5 +117,15 @@ net.Receive("adminZoneMessage", function(len, ply)
 				UpdateZone(ply:EyePos(), "end")
 			end
 		end
+	end
+end)
+
+net.Receive("adminDeleteRecordMessage", function(len, ply)
+	if (roleCache[ply:SteamID64()] or ROLE_USER) == ROLE_ADMIN then
+		local style, steamID = net.ReadString(), net.ReadString()
+
+		recordsCache[style][steamID] = nil
+		sql.QueryTyped("DELETE FROM records WHERE map = ? AND style = ? AND steam_id = ?", game.GetMap(), style, steamID)
+		sql.QueryTyped("DELETE FROM replays WHERE map = ? AND style = ?", game.GetMap(), style)
 	end
 end)

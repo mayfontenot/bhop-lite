@@ -34,7 +34,7 @@ function GM:HUDPaint()
 		personalRecord = worldRecord
 	end
 
-	worldRecord = worldRecord > 0 and ("WR: " .. FormatRecord(worldRecord) .. " (" .. ReadFromCache(recordsCache, "N/A", style, 1, "name") .. ")") or "WR: None"
+	worldRecord = worldRecord > 0 and ("WR: " .. FormatRecord(worldRecord) .. " (" .. string.sub(ReadFromCache(recordsCache, "N/A", style, 1, "name"), 1, 8) .. ")") or "WR: None"
 	personalRecord = personalRecord > 0 and ("PR: " .. FormatRecord(personalRecord)) or "PR: None"
 
 	hudTexts = {}
@@ -117,7 +117,7 @@ function GM:HUDDrawScoreBoard()
 
 		local time = timerStart > 0 and FormatTime(CurTime() - timerStart) or "Stopped"
 
-		AddScoreboardRow(3 + k, 5, v:Name(), style, time, personalRecord, v:Ping())
+		AddScoreboardRow(3 + k, 5, string.sub(v:Name(), 1, 8), style, time, personalRecord, v:Ping())
 	end
 
 	local spectators = ""

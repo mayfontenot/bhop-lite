@@ -3,16 +3,8 @@ function GM:KeyPress(ply, key)									--spectator target switch
 		if key == IN_ATTACK or key == IN_ATTACK2 then
 			local players = team.GetPlayers(TEAM_PLAYER)
 			local target = ply:GetObserverTarget()
-			local dir = 0
-
-			if key == IN_ATTACK then
-				dir = dir - 1
-			elseif key == IN_ATTACK2 then
-				dir = dir + 1
-			end
-
 			local targetKey = table.KeyFromValue(players, target)
-			targetKey = targetKey + dir
+			targetKey = targetKey + (key == IN_ATTACK and -1 or key == IN_ATTACK2 and 1)
 
 			if targetKey > #players then
 				targetKey = 1
