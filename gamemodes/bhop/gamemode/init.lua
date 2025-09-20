@@ -71,6 +71,15 @@ function GM:InitPostEntity()
 		spawns = ents.FindByClass("info_player_terrorist")
 	end
 
+	if startZone.size then
+		local zoneSpawn = ents.Create("info_player_start")
+		zoneSpawn:SetPos(startZone:GetPos())
+		zoneSpawn:SetAngles(spawns[1]:GetAngles())
+		zoneSpawn:SetKeyValue("Master", 1)
+		zoneSpawn:Spawn()
+		spawns = {zoneSpawn}
+	end
+
 	RunConsoleCommand("bot")
 end
 

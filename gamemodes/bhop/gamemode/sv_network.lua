@@ -58,8 +58,8 @@ net.Receive("styleMessage", function(len, ply)
 end)
 
 net.Receive("restartMessage", function(len, ply)
-	ply.replayCache = {}
 	playerCache[ply:SteamID64()].timerStart = 0
+	ply.replayCache = {}
 
 	ply:Spawn()
 
