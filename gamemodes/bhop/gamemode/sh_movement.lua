@@ -4,12 +4,14 @@ function GM:SetupMove(ply, mv, cmd)
 
 	if SERVER then
 		if not ply:IsBot() then
-			ply.velStack = ply.velStack or {}								--part of telehop fix
+			if mapCache.telehopFixType == 0 then								--part of telehop fix
+				ply.velStack = ply.velStack or {}
 
-			table.insert(ply.velStack, mv:GetVelocity())
+				table.insert(ply.velStack, mv:GetVelocity())
 
-			if #ply.velStack > 20 then
-				table.remove(ply.velStack, 1)
+				if #ply.velStack > 20 then
+					table.remove(ply.velStack, 1)
+				end
 			end
 
 			ply.replayCache = ply.replayCache or {}				--record replays

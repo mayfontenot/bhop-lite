@@ -28,18 +28,28 @@ function ENT:EndTouch(ent)
 	local destination = ents.FindByName(self:GetInternalVariable("target"))[1]
 
 	if destination then
-		if ent:IsPlayer() then
-			if not ent:IsBot() then
-				local vel = MaxVector(ent.velStack)
+		if mapCache.telehopFixType == 0 then
+			if ent:IsPlayer() then
+				if not ent:IsBot() then
+					local vel = MaxVector(ent.velStack)
+					vel:Rotate(Angle(0, destination:GetAngles().y - vel:Angle().y, 0))
+
+					ent:SetVelocity(vel - ent:GetVelocity())
+				end
+			else
+				local vel = ent:GetVelocity()
 				vel:Rotate(Angle(0, destination:GetAngles().y - vel:Angle().y, 0))
 
-				ent:SetVelocity(vel - ent:GetVelocity())
+				ent:SetVelocity(vel)
 			end
-		else
-			local vel = ent:GetVelocity()
-			vel:Rotate(Angle(0, destination:GetAngles().y - vel:Angle().y, 0))
+		elseif mapCache.telehopFixType == 1 then
+			local velYaw = ent:GetVelocity():Angle().y
 
-			ent:SetVelocity(vel)
+			ent:SetAngles(Angle(0, velYaw, 0))
+
+			if ent:IsPlayer() then
+				ent:SetEyeAngles(Angle(0, velYaw, 0))
+			end
 		end
 	end
 end

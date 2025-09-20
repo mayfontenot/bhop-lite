@@ -61,6 +61,7 @@ playerCache = {} --stores timerStart and style to [steam_id], networked
 recordsCache = {} --stores name and time to [steam_id], networked
 replayCache = {} --stores replay to [steam_id], not networked
 roleCache = {} --stores role to [steam_id], not networked
+mapCache = {} --stores telehopFixType, not networked
 
 function ReadFromCache(cache, fallBack, ...) -- ... represents an infinite number of nested keys, you can index the table for as many nested keys as the table has
 	for _, v in ipairs({...}) do
