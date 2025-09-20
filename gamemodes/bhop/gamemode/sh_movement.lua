@@ -4,7 +4,7 @@ function GM:SetupMove(ply, mv, cmd)
 
 	if SERVER then
 		if not ply:IsBot() then
-			if mapCache.telehopFixType == 0 then								--part of telehop fix
+			if mapCache.telehopFixType or 0 == 0 then								--part of telehop fix
 				ply.velStack = ply.velStack or {}
 
 				table.insert(ply.velStack, mv:GetVelocity())

@@ -28,7 +28,7 @@ function ENT:EndTouch(ent)
 	local destination = ents.FindByName(self:GetInternalVariable("target"))[1]
 
 	if destination then
-		if mapCache.telehopFixType == 0 then
+		if mapCache.telehopFixType or 0 == 0 then
 			if ent:IsPlayer() then
 				if not ent:IsBot() then
 					local vel = MaxVector(ent.velStack)
