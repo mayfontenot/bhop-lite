@@ -42,14 +42,6 @@ function ENT:EndTouch(ent)
 
 				ent:SetVelocity(vel)
 			end
-		elseif mapCache.telehopFixType == 1 then
-			local velYaw = ent:GetVelocity():Angle().y
-
-			ent:SetAngles(Angle(0, velYaw, 0))
-
-			if ent:IsPlayer() then
-				ent:SetEyeAngles(Angle(0, velYaw, 0))
-			end
 		end
 	end
 end

@@ -40,7 +40,7 @@ function GM:HUDPaint()
 	hudTexts = {}
 
 	if IsValid(observerTarget) then
-		table.insert(hudTexts, observerTarget:Name())
+		table.insert(hudTexts, string.sub(observerTarget:Name(), 1, 8))
 	end
 
 	table.insert(hudTexts, style)
@@ -70,7 +70,7 @@ function GM:HUDPaint()
 		surface.DrawText(text)
 
 		for k, v in pairs(spectators) do
-			local text = v:Name()
+			local text = string.sub(v:Name(), 1, 8)
 			textWidth, textHeight = surface.GetTextSize(text)
 			textHeight = textHeight * 1.5
 			surface.SetTextPos(SCR_W - textWidth - textHeight, SCR_H / 3 + k * textHeight)
@@ -123,7 +123,7 @@ function GM:HUDDrawScoreBoard()
 	local spectators = ""
 
 	for k, v in ipairs(team.GetPlayers(TEAM_SPECTATOR)) do
-		spectators = spectators .. (spectators ~= "" and ", " or "") .. v:Name()
+		spectators = spectators .. (spectators ~= "" and ", " or "") .. string.sub(v:Name(), 1, 8)
 	end
 
 	if #team.GetPlayers(TEAM_SPECTATOR) > 0 then
