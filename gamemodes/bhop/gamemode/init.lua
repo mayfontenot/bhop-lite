@@ -25,19 +25,11 @@ function ChangeLevel(map)
 	end)
 end
 
-function GM:OnEntityCreated(ent)			--fix for maps potentially containing backdoors
-	if ent:GetClass() == "lua_run" then
-		ent:Remove()
-
-		print("!CAUTIONi Map contains a potential back door iCAUTION!")
-	end
-end
-
 startZone, endZone = nil, nil
 local spawns = {}
 
 function GM:InitPostEntity()
-	startZone, endZone = ents.Create("zone_start"), ents.Create("zone_end")
+	startZone, endZone, zoneSpawn = ents.Create("zone_start"), ents.Create("zone_end"), ents.Create("info_player_start")
 
 	ReadCacheFromDB()
 
@@ -47,18 +39,16 @@ function GM:InitPostEntity()
 		v:SetKeyValue("locked_sound", 0)
 	end
 
-	for _, v in pairs(ents.FindByClass("func_breakable")) do 	--breakable fix
+	for _, v in pairs(ents.FindByClass("func_breakable")) do 	--part of breakable fix
+		v:Fire("Break")
+	end
+
+	for _, v in pairs(ents.FindByClass("func_breakable_surf")) do 	--part of breakable fix
 		v:Fire("Break")
 	end
 
 	for _, v in pairs(ents.FindByClass("trigger_teleport")) do 	--part of telehop fix
-		local ent = ents.Create("trigger_teleport2")
-		ent:SetPos(v:GetPos())
-		ent:SetAngles(v:GetAngles())
-		ent:SetKeyValue("target", v:GetInternalVariable("target"))
-		ent.boundsMin = v:GetCollisionBounds()
-		ent.boundsMax = select(2, v:GetCollisionBounds())
-		ent:Spawn()
+		v:Fire("AddOutput", "OnEndTouch !activator:Teleported")
 	end
 
 	spawns = ents.FindByClass("info_player_start")			--find valid player spawns
@@ -72,7 +62,6 @@ function GM:InitPostEntity()
 	end
 
 	if startZone.size then
-		local zoneSpawn = ents.Create("info_player_start")
 		zoneSpawn:SetPos(startZone:GetPos())
 		zoneSpawn:SetAngles(spawns[1]:GetAngles())
 		zoneSpawn:SetKeyValue("Master", 1)
@@ -83,8 +72,38 @@ function GM:InitPostEntity()
 	RunConsoleCommand("bot")
 end
 
+local function MaxVector(tbl)
+	local max = tbl[1]
+
+	for _, v in pairs(tbl) do
+		if v:Length2DSqr() > max:Length2DSqr() then
+			max = v
+		end
+	end
+
+	return max
+end
+
 function GM:AcceptInput(ent, input, activator, caller, value)
-	if (ent:GetClass() == "func_door" and input == "Close") or ent:GetClass() == "lua_run" then return true end --part of doors fix, and lua_run backdoor fix
+	if (ent:GetClass() == "func_door" and input == "Close") or ent:GetClass() == "lua_run" then return true end 		--part of doors fix, and lua_run backdoor fix
+
+	if input == "Teleported" then															--telehop fix
+		local destination = ents.FindByName(caller:GetInternalVariable("target"))[1]
+
+		if destination then
+			if mapCache.telehopFixType or 0 == 0 then
+				if ent:IsPlayer() then
+					if not ent:IsBot() then
+						local vel = MaxVector(ent.velStack)
+						vel:Rotate(Angle(0, destination:GetAngles().y - vel:Angle().y, 0))
+						vel = vel - ent:GetVelocity()
+
+						ent:SetVelocity(Vector(vel.x, vel.y, 0))
+					end
+				end
+			end
+		end
+	end
 end
 
 function GM:PlayerSelectSpawn(ply, transition)
@@ -121,6 +140,8 @@ end
 
 function GM:PlayerSpawn(ply, transition)
 	ply:StripWeapons()
+	ply:SetGravity(1)
+	ply:SetMoveType(MOVETYPE_WALK)
 end
 
 function GM:EntityFireBullets(ent, data)				--refill the magazine when player shoots

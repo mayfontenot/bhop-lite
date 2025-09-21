@@ -31,6 +31,14 @@ local function UpdateZone(pos2, zone)
 	ent:SetPos(pos)
 	ent.size = size
 	ent:Spawn()
+
+	if zone == "start" then
+		zoneSpawn:SetPos(ent:GetPos())
+		zoneSpawn:SetAngles(spawns[1]:GetAngles())
+		zoneSpawn:SetKeyValue("Master", 1)
+		zoneSpawn:Spawn()
+		spawns = {zoneSpawn}
+	end
 end
 
 net.Receive("replayStyleMessage", function(len, ply)

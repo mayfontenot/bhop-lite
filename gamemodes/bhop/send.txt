@@ -11,8 +11,6 @@ gamemodes\bhop\entities\entities\zone_start\shared.lua
 gamemodes\bhop\entities\entities\zone_start\cl_init.lua
 gamemodes\bhop\entities\entities\zone_end\shared.lua
 gamemodes\bhop\entities\entities\zone_end\cl_init.lua
-gamemodes\bhop\entities\entities\trigger_teleport2\shared.lua
-gamemodes\bhop\entities\entities\trigger_teleport2\cl_init.lua
 gamemodes\bhop\entities\weapons\weapon_cs_base.lua
 gamemodes\bhop\entities\weapons\weapon_glock.lua
 gamemodes\bhop\entities\weapons\weapon_knife.lua

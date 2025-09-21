@@ -21,8 +21,8 @@ function GM:KeyPress(ply, key)									--spectator target switch
 	end
 end
 
-function GM:OnPlayerHitGround(ply, inWater, onFloater, speed)		--ssj counter
-	ply.jumps = ply:KeyDown(IN_JUMP) and ply.jumps + 1 or 1
+function GM:OnPlayerHitGround(ply, inWater, onFloater, speed)
+	ply.jumps = ply:KeyDown(IN_JUMP) and ply.jumps + 1 or 1			--ssj counter
 
 	if ply.jumps > 1 and ply.jumps % 6 == 0 then
 		local vel = ply:GetVelocity():Length2D()
