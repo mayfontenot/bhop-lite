@@ -34,13 +34,13 @@ function GM:HUDPaint()
 		personalRecord = worldRecord
 	end
 
-	worldRecord = worldRecord > 0 and ("WR: " .. FormatRecord(worldRecord) .. " (" .. string.sub(ReadFromCache(recordsCache, "N/A", style, 1, "name"), 1, 8) .. ")") or "WR: None"
+	worldRecord = worldRecord > 0 and ("WR: " .. FormatRecord(worldRecord) .. " (" .. ReadFromCache(recordsCache, "N/A", style, 1, "name") .. ")") or "WR: None"
 	personalRecord = personalRecord > 0 and ("PR: " .. FormatRecord(personalRecord)) or "PR: None"
 
 	hudTexts = {}
 
 	if IsValid(observerTarget) then
-		table.insert(hudTexts, string.sub(observerTarget:Name(), 1, 8))
+		table.insert(hudTexts, observerTarget:Name())
 	end
 
 	table.insert(hudTexts, style)
@@ -70,7 +70,7 @@ function GM:HUDPaint()
 		surface.DrawText(text)
 
 		for k, v in pairs(spectators) do
-			local text = string.sub(v:Name(), 1, 8)
+			local text = v:Name()
 			textWidth, textHeight = surface.GetTextSize(text)
 			textHeight = textHeight * 1.5
 			surface.SetTextPos(SCR_W - textWidth - textHeight, SCR_H / 3 + k * textHeight)
@@ -117,13 +117,13 @@ function GM:HUDDrawScoreBoard()
 
 		local time = timerStart > 0 and FormatTime(CurTime() - timerStart) or "Stopped"
 
-		AddScoreboardRow(3 + k, 5, string.sub(v:Name(), 1, 8), style, time, personalRecord, v:Ping())
+		AddScoreboardRow(3 + k, 5, v:Name(), style, time, personalRecord, v:Ping())
 	end
 
 	local spectators = ""
 
 	for k, v in ipairs(team.GetPlayers(TEAM_SPECTATOR)) do
-		spectators = spectators .. (spectators ~= "" and ", " or "") .. string.sub(v:Name(), 1, 8)
+		spectators = spectators .. (spectators ~= "" and ", " or "") .. v:Name()
 	end
 
 	if #team.GetPlayers(TEAM_SPECTATOR) > 0 then

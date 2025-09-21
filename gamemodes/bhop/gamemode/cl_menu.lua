@@ -169,7 +169,7 @@ concommand.Add("bhoplite_menu", function(ply, cmd, args)
 	for style, record in pairs(recordsCache) do
 		for steamID, v in pairs(record) do
 			if steamID ~= 1 then
-				personalRecordsPanel:AddLine(style, steamID, string.sub(v.name, 1, 8), FormatRecord(v.time))
+				personalRecordsPanel:AddLine(style, steamID, v.name, FormatRecord(v.time))
 			end
 		end
 	end
@@ -185,7 +185,7 @@ concommand.Add("bhoplite_menu", function(ply, cmd, args)
 				label:SetPos(8, 8 + 40 * (worldRecordsIndex - 1))
 				label:SetTextColor(Color(255, 255, 255))
 				label:SetFont("HudHintTextLarge")
-				label:SetText(style .. " " .. steamID .. " " .. string.sub(v.name, 1, 8) .. " " .. FormatRecord(v.time))
+				label:SetText(style .. " " .. steamID .. " " .. v.name .. " " .. FormatRecord(v.time))
 
 				local buttonReplay = vgui.Create("DButton", worldRecordsPanel)
 				buttonReplay:SetSize(64, 32)
@@ -218,7 +218,7 @@ concommand.Add("bhoplite_menu", function(ply, cmd, args)
 		label:SetPos(8, 8 + 40 * (k - 1))
 		label:SetTextColor(Color(255, 255, 255))
 		label:SetFont("HudHintTextLarge")
-		label:SetText(v:SteamID64() .. " " .. string.sub(v:Name(), 1, 8))
+		label:SetText(v:SteamID64() .. " " .. v:Name())
 
 		local buttonProfile = vgui.Create("DButton", playersPanel)
 		buttonProfile:SetSize(64, 32)
