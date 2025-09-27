@@ -6,14 +6,12 @@ function GM:SetupMove(ply, mv, cmd)
 
 	if SERVER then
 		if not ply:IsBot() then
-			if mapCache.telehopFixType or 0 == 0 then								--part of telehop fix
-				ply.velStack = ply.velStack or {}
+			ply.velStack = ply.velStack or {}				--part of telehop fix
 
-				table.insert(ply.velStack, mv:GetVelocity())
+			table.insert(ply.velStack, mv:GetVelocity())
 
-				if #ply.velStack > 20 then
-					table.remove(ply.velStack, 1)
-				end
+			if #ply.velStack > 20 then
+				table.remove(ply.velStack, 1)
 			end
 
 			ply.replayCache = ply.replayCache or {}				--record replays
@@ -25,10 +23,8 @@ function GM:SetupMove(ply, mv, cmd)
 			if playerCache[steamID].timerStart == 0 and #ply.replayCache > 100 then
 				table.move(ply.replayCache, #ply.replayCache - 100, #ply.replayCache, 1)
 			end
-		elseif ply:IsBot() then						--play replay
+		elseif ply:IsBot() then		--play replay
 			if not ply.replayMV then
-				ply:SetMoveType(MOVETYPE_NONE)
-
 				ply.replayMV = 1
 			end
 
@@ -41,6 +37,7 @@ function GM:SetupMove(ply, mv, cmd)
 					NetworkPlayerCache()
 				end
 
+				ply:SetMoveType(MOVETYPE_NONE)
 				mv:SetButtons(mvTable[ply.replayMV].buttons)
 				mv:SetOrigin(Vector(mvTable[ply.replayMV].x, mvTable[ply.replayMV].y, mvTable[ply.replayMV].z))
 				ply:SetEyeAngles(Angle(mvTable[ply.replayMV].pitch, mvTable[ply.replayMV].yaw, 0))
