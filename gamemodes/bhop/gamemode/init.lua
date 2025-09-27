@@ -139,8 +139,6 @@ end
 
 function GM:PlayerSpawn(ply, transition)
 	ply:StripWeapons()
-	ply:SetGravity(1)
-	ply:SetMoveType(MOVETYPE_WALK)
 end
 
 function GM:EntityFireBullets(ent, data)				--refill the magazine when player shoots

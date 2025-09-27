@@ -1,4 +1,6 @@
 function GM:SetupMove(ply, mv, cmd)
+	if ply:Team() == TEAM_SPECTATOR then return end
+
 	local steamID = ply:SteamID64()
 	local style = playerCache[steamID].style
 
