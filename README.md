@@ -1,7 +1,7 @@
 # bhop-lite
 A lightweight Bunny Hop gamemode for Garry's Mod<br/>
 Unique features: Database to memory caching system, SQLite, minimal network traffic, and optimized code for maximum performance<br/>
-Additional features: RNG fix, telehop fix, doors fix, breakables fix, lua_run backdoor fix<br/>
+Additional features: RNG fix, perfect telehop fix, doors fix, breakables fix, lua_run backdoor fix<br/>
 Made by Mei and FiBzY<br/>
 WORK IN PROGRESS, changelevel system yet to be implemented<br/>
 
