@@ -157,8 +157,6 @@ concommand.Add("bhoplite_menu", function(ply, cmd, args)
 	commandsPanel:AddLine("start pos2", "Create or modify start pos2 to your eye position. Admin only.")
 	commandsPanel:AddLine("end pos1", "Create or modify end pos1 to your foot position. Admin only.")
 	commandsPanel:AddLine("end pos2", "Create or modify end pos2 to your eye position. Admin only.")
-	commandsPanel:AddLine("telehopfix perfect", "Sets the map telehop fix type to perfect (default). Admin only.")
-	commandsPanel:AddLine("telehopfix normal", "Sets the map telehop fix type to normal. Admin only.")
 	UpdatePanel(commandsPanel)
 
 	local personalRecordsPanel = AddPanel("PRs", "DListView", frame)

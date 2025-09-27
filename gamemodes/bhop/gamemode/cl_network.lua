@@ -80,14 +80,6 @@ function GM:OnPlayerChat(ply, text, teamChat, isDead)
 				net.WriteBit(1)
 				net.WriteBit(1)
 			net.SendToServer()
-		elseif text == "telehopfix perfect" then
-			net.Start("adminTelehopFixMessage")
-				net.WriteBit(0)
-			net.SendToServer()
-		elseif text == "telehopfix normal" then
-			net.Start("adminTelehopFixMessage")
-				net.WriteBit(1)
-			net.SendToServer()
 		else
 			chat.AddText(Color(151, 211, 255), "[" .. ALT_NAME .. "] Unknown command. Press F1 for a list of commands.")
 		end

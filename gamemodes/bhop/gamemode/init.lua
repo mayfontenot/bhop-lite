@@ -26,12 +26,30 @@ function ChangeLevel(map)
 end
 
 startZone, endZone = nil, nil
-local spawns = {}
+spawns = {}
 
 function GM:InitPostEntity()
+	spawns = ents.FindByClass("info_player_start")			--find valid player spawns
+
+	if #spawns == 0 then
+		spawns = ents.FindByClass("info_player_counterterrorist")
+	end
+
+	if #spawns == 0 then
+		spawns = ents.FindByClass("info_player_terrorist")
+	end
+
 	startZone, endZone, zoneSpawn = ents.Create("zone_start"), ents.Create("zone_end"), ents.Create("info_player_start")
 
 	ReadCacheFromDB()
+
+	if startZone.size then
+		zoneSpawn:SetPos(startZone:GetPos())
+		zoneSpawn:SetAngles(spawns[1]:GetAngles())
+		zoneSpawn:SetKeyValue("Master", 1)
+		zoneSpawn:Spawn()
+		spawns = {zoneSpawn}
+	end
 
 	for _, v in pairs(ents.FindByClass("func_door")) do 		--part of doors fix
 		v:Fire("Open")
@@ -51,24 +69,6 @@ function GM:InitPostEntity()
 		v:Fire("AddOutput", "OnEndTouch !activator:Teleported")
 	end
 
-	spawns = ents.FindByClass("info_player_start")			--find valid player spawns
-
-	if #spawns == 0 then
-		spawns = ents.FindByClass("info_player_counterterrorist")
-	end
-
-	if #spawns == 0 then
-		spawns = ents.FindByClass("info_player_terrorist")
-	end
-
-	if startZone.size then
-		zoneSpawn:SetPos(startZone:GetPos())
-		zoneSpawn:SetAngles(spawns[1]:GetAngles())
-		zoneSpawn:SetKeyValue("Master", 1)
-		zoneSpawn:Spawn()
-		spawns = {zoneSpawn}
-	end
-
 	RunConsoleCommand("bot")
 end
 
@@ -85,21 +85,20 @@ local function MaxVector(tbl)
 end
 
 function GM:AcceptInput(ent, input, activator, caller, value)
-	if (ent:GetClass() == "func_door" and input == "Close") or ent:GetClass() == "lua_run" then return true end 		--part of doors fix, and lua_run backdoor fix
+	if (ent:GetClass() == "func_door" and input == "Close") or (ent:GetClass() == "point_template" and input == "ForceSpawn") or ent:GetClass() == "lua_run" then return true end 		--part of doors fix, and lua_run backdoor fix
 
 	if input == "Teleported" then															--telehop fix
 		local destination = ents.FindByName(caller:GetInternalVariable("target"))[1]
 
 		if destination then
-			if mapCache.telehopFixType or 0 == 0 then
-				if ent:IsPlayer() then
-					if not ent:IsBot() then
-						local vel = MaxVector(ent.velStack)
-						vel:Rotate(Angle(0, destination:GetAngles().y - vel:Angle().y, 0))
-						vel = vel - ent:GetVelocity()
+			if ent:IsPlayer() then
+				if not ent:IsBot() then
+					local vel = MaxVector(ent.velStack)
+					vel:Rotate(Angle(0, destination:GetAngles().y - vel:Angle().y, 0)) --rotate the velocity vector by the delta of our destination angle's yaw and our velocity angle's yaw
+					vel = vel - ent:GetVelocity() --get the difference between the new velocity and current velocity because Player:SetVelocity adds velocity, not sets
+					vel.z = 0 --ensure z velocity is 0 after getting the difference, we don't wish to change our Z velocity
 
-						ent:SetVelocity(Vector(vel.x, vel.y, 0))
-					end
+					ent:SetVelocity(vel)
 				end
 			end
 		end

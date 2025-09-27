@@ -6,7 +6,6 @@ util.AddNetworkString("spectateMessage")
 util.AddNetworkString("adminMapMessage")
 util.AddNetworkString("adminZoneMessage")
 util.AddNetworkString("adminDeleteRecordMessage")
-util.AddNetworkString("adminTelehopFixMessage")
 
 local function ChangeStyle(ply, style)
 	local steamID = ply:SteamID64()
@@ -136,11 +135,5 @@ net.Receive("adminDeleteRecordMessage", function(len, ply)
 		recordsCache[style][steamID] = nil
 		sql.QueryTyped("DELETE FROM records WHERE map = ? AND style = ? AND steam_id = ?", game.GetMap(), style, steamID)
 		sql.QueryTyped("DELETE FROM replays WHERE map = ? AND style = ?", game.GetMap(), style)
-	end
-end)
-
-net.Receive("adminTelehopFixMessage", function(len, ply)
-	if (roleCache[ply:SteamID64()] or ROLE_USER) == ROLE_ADMIN then
-		mapCache.telehopFixType = net.ReadBit()
 	end
 end)

@@ -7,7 +7,7 @@ function WriteCacheToDB()
 	local endPos, endSize = endZone:GetPos(), endZone.size
 
 	if startZone.size then
-		sql.QueryTyped("INSERT OR REPLACE INTO maps (map, start_x, start_y, start_z, start_l, start_w, start_h, end_x, end_y, end_z, end_l, end_w, end_h, telehop_fix_type) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", map, startPos.x, startPos.y, startPos.z, startSize.x, startSize.y, startSize.z, endPos.x, endPos.y, endPos.z, endSize.x, endSize.y, endSize.z, mapCache.telehopFixType)
+		sql.QueryTyped("INSERT OR REPLACE INTO maps (map, start_x, start_y, start_z, start_l, start_w, start_h, end_x, end_y, end_z, end_l, end_w, end_h) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", map, startPos.x, startPos.y, startPos.z, startSize.x, startSize.y, startSize.z, endPos.x, endPos.y, endPos.z, endSize.x, endSize.y, endSize.z)
 	end
 
 	for style, record in pairs(recordsCache) do
@@ -30,7 +30,7 @@ function WriteCacheToDB()
 end
 
 function ReadCacheFromDB()
-	sql.QueryTyped("CREATE TABLE IF NOT EXISTS maps (map TEXT PRIMARY KEY, start_x REAL, start_y REAL, start_z REAL, start_l REAL, start_w REAL, start_h REAL, end_x REAL, end_y REAL, end_z REAL, end_l REAL, end_w REAL, end_h REAL, telehop_fix_type INTEGER)")
+	sql.QueryTyped("CREATE TABLE IF NOT EXISTS maps (map TEXT PRIMARY KEY, start_x REAL, start_y REAL, start_z REAL, start_l REAL, start_w REAL, start_h REAL, end_x REAL, end_y REAL, end_z REAL, end_l REAL, end_w REAL, end_h REAL)")
 	sql.QueryTyped("CREATE TABLE IF NOT EXISTS records (map TEXT, style TEXT, steam_id INTEGER, name TEXT, time REAL, PRIMARY KEY (map, style, steam_id))")
 	sql.QueryTyped("CREATE TABLE IF NOT EXISTS replays (map TEXT, style TEXT, frame INTEGER, x REAL, y REAL, z REAL, pitch REAL, yaw REAL, buttons INTEGER, PRIMARY KEY (map, style, frame))")
 	sql.QueryTyped("CREATE TABLE IF NOT EXISTS roles (steam_id INTEGER PRIMARY KEY, role TEXT)")
@@ -43,7 +43,6 @@ function ReadCacheFromDB()
 		tempMapCache = tempMapCache[1]
 
 		if tempMapCache then
-			mapCache.telehopFixType = tempMapCache.telehop_fix_type
 			startZone:SetPos(Vector(tempMapCache.start_x, tempMapCache.start_y, tempMapCache.start_z))
 			endZone:SetPos(Vector(tempMapCache.end_x, tempMapCache.end_y, tempMapCache.end_z))
 
