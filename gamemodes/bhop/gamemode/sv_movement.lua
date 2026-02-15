@@ -3,16 +3,10 @@ function GM:KeyPress(ply, key)									--spectator target switch
 		if key == IN_ATTACK or key == IN_ATTACK2 then
 			local players = team.GetPlayers(TEAM_PLAYER)
 			local target = ply:GetObserverTarget()
-			local targetKey = table.KeyFromValue(players, target)
-			targetKey = targetKey + (key == IN_ATTACK and -1 or key == IN_ATTACK2 and 1)
+			local targetIndex = table.KeyFromValue(players, target)
+			targetIndex = key == IN_ATTACK and targetIndex = (targetIndex - 1 + #players) % #players + 1 or key == IN_ATTACK2 and targetIndex = (targetIndex + 1) % #players + 1
 
-			if targetKey > #players then
-				targetKey = 1
-			elseif targetKey < 1 then
-				targetKey = #players
-			end
-
-			target = players[targetKey]
+			target = players[targetIndex]
 
 			if IsValid(target) then
 				ply:SpectateEntity(target)
@@ -35,4 +29,5 @@ function GM:OnPlayerHitGround(ply, inWater, onFloater, speed)
 			end
 		end
 	end
+
 end
